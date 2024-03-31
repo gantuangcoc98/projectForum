@@ -1,0 +1,34 @@
+Color Theme:
+'lighter-white': '#e8e5e0',
+'light-white': '#d8d4cc',
+'dark-white': '#cac3b9',
+'main-maroon': '#720026',
+'light-maroon': '#ce4257',
+'light-gold': '#f5d57e',
+'dark-gold': '#efb248',
+
+Coolors.co (Maroon):
+https://coolors.co/palettes/popular/maroon
+--------------------------------------------------------------------
+Structure:
+Based on Resolution: 1920 x 1080 px(pixel) - created on Canva
+
+(1)Header/AppBar: 69% of width = 1325w(rounded off) x 298h  <=== BASE STRUCTURE
+	- broken down to the very least base structure of 1/8
+	- whole AppBar/Header would ratio to 8/8 as a whole
+	- whole page width would have a total ratio of 12/12
+
+(2)Least Base Structure: 166 px(pixel) of width = 1/8 of the (1)Header/AppBar
+	- could be reference for small components (profile, settings, icons, etc.)
+
+(3)Quarter Base Structure: 331 px(pixel) of width = 2/8 of the (1)Header/AppBar
+	- could be reference for larger components (wide button, logo/icon + slogan/text container, semi-wide containers, etc.)
+
+(4)Half Base Structure: 662 px(pixel) of width = 4/8 of the (1)Header/AppBar
+	- could be use as a splitting container (about info, trends, graphs, advertising, tools, navigation, sidebar, etc.
+
+(5)Three-Quarters Base Structure: 993 px(pixel) of width = 6/8 of the (1)Header/AppBar
+	- could be use as the main page, focus area, news feed, content area, etc.
+
+* Overlaps and divisions would be a nice consideration together with the guide above for further balanced structuring of the webpage.
+--------------------------------------------------------------------
