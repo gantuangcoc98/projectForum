@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+Color Theme:
+'lighter-white': '#e8e5e0',
+'light-white': '#d8d4cc',
+'dark-white': '#cac3b9',
+'main-maroon': '#720026',
+'light-maroon': '#8D002F',
+'lighter-maroon': '#ce4257',
+'lighter-gold': '#f5d57e',
+'light-gold': '#efb248',
+'dark-gold': '#ECA11F',
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Coolors.co (Maroon):
+https://coolors.co/palettes/popular/maroon
+--------------------------------------------------------------------
+Structure:
+Based on Resolution: 1920 x 1080 px(pixel) - created on Canva
 
-## Available Scripts
+(1)Header/AppBar: 69% of width = 1325w(rounded off) x 298h  <=== BASE STRUCTURE
+	- broken down to the very least base structure of 1/8
+	- whole AppBar/Header would ratio to 8/8 as a whole
+	- whole page width would have a total ratio of 12/12
 
-In the project directory, you can run:
+(2)Least Base Structure: 166 px(pixel) of width = 1/8 of the (1)Header/AppBar
+	- could be reference for small components (profile, settings, icons, etc.)
 
-### `npm start`
+(3)Quarter Base Structure: 331 px(pixel) of width = 2/8 of the (1)Header/AppBar
+	- could be reference for larger components (wide button, logo/icon + slogan/text container, semi-wide containers, etc.)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+(4)Half Base Structure: 662 px(pixel) of width = 4/8 of the (1)Header/AppBar
+	- could be use as a splitting container (about info, trends, graphs, advertising, tools, navigation, sidebar, etc.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+(5)Three-Quarters Base Structure: 993 px(pixel) of width = 6/8 of the (1)Header/AppBar
+	- could be use as the main page, focus area, news feed, content area, etc.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* Overlaps and divisions would be a nice consideration together with the guide above for further balanced structuring of the webpage.
+--------------------------------------------------------------------
