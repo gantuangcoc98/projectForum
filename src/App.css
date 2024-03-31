@@ -1,79 +1,25 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.sides {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-/* Start editing CSS code here */
-.Appbar_container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #FFF7E8;
-}
-
-.logo_title_container {
-  display: flex;
-  flex-direction: inherit;
-  gap: 10px;
+  width: 24%;
   align-items: center;
 }
 
-.wrapper {
+.welcome_input label {
   display: flex;
   flex-direction: column;
-  margin: 10px;
-  border: 1px solid lightgray;
-}
-
-.button_theme {
-  border-style: none;
-  border-radius: 12px;
-  background-color: #280000;
-  padding: 10px 15px;
-  font-weight: bold;
-  color: white;
+  gap: 5px;
   font-size: 16px;
 }
 
-.button_theme:hover {
-  cursor: pointer;
-  background-color: #6C0000;
+.welcome_input input {
+  background-color: transparent;
+  border: 1px solid black;
+  padding: 5px;
+  font-size: 20px;
+}
+
+.welcome_input input:focus {
+  outline: none;
+  border: 2px solid #720026;
 }

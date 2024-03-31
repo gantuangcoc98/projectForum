@@ -1,19 +1,18 @@
-// import logo from './logo.svg';
 import './App.css';
-import AppBar from './Appbar';
+import AppBar from './components/Appbar';
 import { Route, Routes } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { Welcome } from './pages/Welcome';
 
 function App() {
+
   return (
-    
-      <div className='wrapper'>
+      <div className='bg-light-white'>
         <AppBar />
         
         <Routes>
-          <Route
-            path='/'
-            element={<></>}
-          ></Route>
+          <Route path='/' element={<Welcome />} />
+          <Route path='/home' element={<Home />}/>
         </Routes>
       </div>
   );
