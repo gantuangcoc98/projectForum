@@ -62,3 +62,18 @@
   margin: 10px;
   border: 1px solid lightgray;
 }
+
+.button_theme {
+  border-style: none;
+  border-radius: 12px;
+  background-color: #280000;
+  padding: 10px 15px;
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+}
+
+.button_theme:hover {
+  cursor: pointer;
+  background-color: #6C0000;
+}

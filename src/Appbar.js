@@ -1,20 +1,17 @@
-import Button from "./Button";
 import "./App.css"
 import logo from "./logo.png";
-
-const handleClick = (event) => {
-    console.log("Button clicked");
-}
+import { useNavigate } from 'react-router-dom';
 
 export default function AppBar() {
-    return (
-        <div className="Appbar_container">
-            <div className="logo_title_container">
-                <img src={logo} alt="Logo" style={{width: "auto", height: "69px"}}></img>
-                <h2>TEKMUNITY</h2>
-            </div>
+    const navigate = useNavigate();
 
-            <Button text={"Login"} color={"#280000"} onclick={(event) => handleClick()}/>            
+    const handleOnClick = () => {
+        navigate("/login");
+    }
+
+    return (
+        <div className="">
+            
         </div>
-    );
+    )
 };
