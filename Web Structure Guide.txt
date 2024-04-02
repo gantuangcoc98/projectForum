@@ -8,6 +8,7 @@ Color Theme:
 'lighter-gold': '#f5d57e',
 'light-gold': '#efb248',
 'dark-gold': '#ECA11F',
+'border-line': '#BDB7A9',
 
 Coolors.co (Maroon):
 https://coolors.co/palettes/popular/maroon

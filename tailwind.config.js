@@ -15,6 +15,7 @@ module.exports = {
         'lighter-gold': '#f5d57e',
         'light-gold': '#efb248',
         'dark-gold': '#ECA11F',
+        'border-line': '#BDB7A9',
       },
     },
   },

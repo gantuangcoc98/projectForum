@@ -1,0 +1,79 @@
+User
+- userId:int
+- firstname: string
+- lastname: string
+- username: string
+- password: string
+- userType: int
+- posts: List<Post>
+- answers: List<Answer>
+- tags: List<Tag>
+- email: string
+-----------------------------
++ createPost(): void
++ deletePost(postId: int): void
++ createTag(): void
++ deleteTag(tagId: int): void
++ approveTag(tagId: int): void
++ declineTag(tagId: int): void
+
+
+Post
+- postId: int
+- title: string
+- description: string
+- creationDate: Date
+- author: User
+- comments: List<Comment>
+- upVotes: List<int>
+- downVotes: List<int>
+- state: boolean
+- answers: List<Answer>
+- tags: List<Tag>
+-----------------------------
++ postAnswered(): boolean
++ answerPost(): void
++ commentPost(): void
++ upVote(): void
++ downVote(): void
+
+
+Tag
+- tagId: int
+- title: string
+- description: string
+- author: string
+- posts: List<Post>
+- watchers: List<User>
+-----------------------------
++ watchTag(): void
++ improveTag(): void
+
+
+Answer
+- answerId: int
+- content: string
+- author: User
+- date: Date
+-----------------------------
+
+
+Comment
+- commentId: int
+- content: string
+- author: User
+- date: Date
+-----------------------------
+
+===================================================
+
+Relationships
+
+User ---> Post = Association
+User ---> Tag = Association
+Tag --> Post = Aggregation
+Comment ---> Post = Composition
+Answers ---> Post = Composition
+
+-----------------------------------------------
+Explaination: Assocoation kay normal ra nga line nga nag connect sa usa ka class padung sa laing class. Ang Aggregation ky line nga nag connect sa usa ka class padung sa lain where if ang main class nga gi point sa arrow ky i delete/removed , ang gi connectan nga class ky pwede gihapon mo exist, example if ang post madelete ky ang tag pwede ra ghapon mo exist or dili ma wala. Sa Composition ky opposite sa Aggregation, if ang gi point nga main class sa arrow ky i delete or i remove, ma remove sd ang usa ka class nga gi connectan ky dependent mn cya, example ani ky Comment ---> Post, if ang Post i delete, ofc ma delete sd ang comments dapat.

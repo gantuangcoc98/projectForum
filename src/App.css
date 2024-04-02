@@ -1,8 +1,5 @@
-.sides {
-  display: flex;
-  flex-direction: column;
-  width: 24%;
-  align-items: center;
+html {
+ background-color: #d8d4cc;
 }
 
 .welcome_input label {
