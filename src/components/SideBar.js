@@ -49,14 +49,14 @@ export default function SideBar() {
     return (
         <>
             {loginStatus && 
-                <div className="flex flex-col items-center w-[25%] h-full bg-lighter-white fixed">
+                <div className="flex flex-col items-center w-[25%] h-full bg-lighter-white fixed z-[1000]">
                     <div className="w-full h-fit pt-[5px] pb-[5px]">
                         <img src={logo} alt="logo" className="h-[50px] w-auto ml-[40px] hover:cursor-pointer" />
                     </div>
 
                     <div className="flex flex-col items-center h-full w-full p-[30px] gap-[10px]">
                         <div className='flex w-full h-fit justify-between text-[16px] items-end'>
-                            <h3 className="font-semibold">Top Posts</h3>
+                            <h3 className="font-semibold">Your Posts</h3>
                             <span className="flex items-center gap-[3px] p-[5px] text-[14px] font-semibold bg-light-gold rounded-[10px] hover:cursor-pointer hover:bg-dark-gold"
                                 onClick={()=>createPost()}>
                                 <MdIcons.MdOutlineCreate />
@@ -70,7 +70,7 @@ export default function SideBar() {
                                     return (
                                         <li key={index}>
                                             <div className="flex w-full h-fit relative">
-                                                <Link to='/postID' className="text-[14px] w-full hover:underline hover:cursor-pointer z-10">{item.post}</Link>
+                                                <Link to='/postID' className="text-[14px] w-full hover:underline hover:cursor-pointer z-10">{item.title}</Link>
                                                 <span className="text-[12px] absolute right-0 z-0">{item.date}</span>
                                             </div>
                                         </li>
