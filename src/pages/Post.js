@@ -8,8 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { data } from '../sample-data/postdata';
 import { answerData } from '../sample-data/answerData';
 import { commentData } from '../sample-data/commentData';
-import { Comment } from "../components/Comment";
-import { Answer } from "../components/Answer";
+import { CommentInput } from "../components/CommentInput";
+import { AnswerInput } from "../components/AnswerInput";
+import { viewProfile } from "../components/Function";
+import { Answers } from "../components/Answers";
+import { Comments } from "../components/Comments";
 
 export const Post = () => {
     const navigate = useNavigate();
@@ -98,10 +101,6 @@ export const Post = () => {
         }
     }
 
-    const viewProfile = (userId) => {
-        console.log('Viewing profile', userId)
-    }
-
     const display = (state) => {
         switch(state) {
             case 'answers':
@@ -133,14 +132,15 @@ export const Post = () => {
 
                     <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
                         <div className="flex gap-[10px] w-full h-fit p-[10px]">
-                            <span className="w-fit h-fit"><img src={profile} alt="profile" width='250px'/></span>
+                            <span className="w-fit h-fit hover:cursor-pointer hover:opacity-80"
+                                onClick={()=>viewProfile(postData.username)}><img src={profile} alt="profile" width='250px'/></span>
 
                             <div className="flex flex-col gap-[5px] h-full text-[18px]">
                                 <div className="flex gap-[5px]">
                                     <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer"
-                                        onClick={()=>viewProfile(loggedUser)}>{postData.nickname}</span>
+                                        onClick={()=>viewProfile(postData.username)}>{postData.nickname}</span>
                                     <span className="font-light text-dark-gold hover:cursor-pointer"
-                                        onClick={()=>viewProfile(loggedUser)}>{'@' + postData.username}</span>
+                                        onClick={()=>viewProfile(postData.username)}>{'@' + postData.username}</span>
                                 </div>
 
                                 <div className="flex flex-col">
@@ -187,8 +187,7 @@ export const Post = () => {
                             </div>
                         </div>
 
-                        {answerToggle && <Answer user={loggedUser}/>}
-
+                        {answerToggle && <AnswerInput user={loggedUser}/>}
 
                         <div className="flex justify-evenly w-full h-[50px] text-[16px] border-t border-border-line">
                             <div className="flex justify-center w-[50%] h-full hover:bg-dark-white hover:cursor-pointer"
@@ -212,63 +211,11 @@ export const Post = () => {
                         </div>
 
                         <div className="w-full h-fit" ref={commentRef}>
-                            {commentToggle && <Comment user={loggedUser}/>}
+                            {commentToggle && <CommentInput user={loggedUser}/>}
 
                             <ul className="flex flex-col w-full h-fit">
-                                {showAnswers ? 
-                                    answerData.map(
-                                        (item, index) => {
-                                            return (
-                                                <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
-                                                    <span className="w-[51px] h-[51px]"><img src={profile} alt="profile" width="100%"/></span>
-                                                    
-                                                    <div className="flex flex-col gap-[5px] h-fit w-full text-[16px]">
-                                                        <div className="flex gap-[5px] items-center">
-                                                            <span className="text-main-maroon font-semibold hover:cursor-pointer hover:underline"
-                                                                onClick={()=>viewProfile(item.author)}>{item.author}</span>
-                                                            <span className="text-dark-gold hover:cursor-pointer"
-                                                                onClick={()=>viewProfile(item.author)}>{'@' + item.author}</span>
-                                                        </div>
-                                                        <div className="h-fit w-[95%]">
-                                                            <span>{item.content}</span>
-                                                        </div>
-                                                        <div className="flex gap-[5px] items-center text-gray-500">
-                                                            <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
-                                                            <span className="text-[14px]">{item.date}</span>
-                                                            <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            )
-                                        }
-                                    )
-                                    :
-                                    commentData.map(
-                                        (item, index) => {
-                                            return (
-                                                <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
-                                                    <span className="w-[51px] h-[51px]"><img src={profile} alt="profile" width='100%'/></span>
-                                                    <div className="w-full h-fit flex flex-col gap-[5px] text-[16px]">
-                                                        <div className="flex gap-[5px]">
-                                                            <span className="text-main-maroon font-semibold hover:underline hover:cursor-pointer"
-                                                                onClick={()=>viewProfile(item.author)}>{item.author}</span>
-                                                            <span className="text-dark-gold hover:cursor-pointer"
-                                                                onClick={()=>viewProfile(item.author)}>{'@' + item.author}</span>
-                                                        </div>
-                                                        <div className="h-fit w-[95%]">
-                                                            <span>{item.content}</span>
-                                                        </div>
-                                                        <div className="flex gap-[5px] items-center text-gray-500">
-                                                            <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
-                                                            <span className="text-[14px]">{item.date}</span>
-                                                            <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            )
-                                        }
-                                    )
-                                }
+                                {showAnswers ? <Answers data={answerData}/>
+                                    : <Comments data={commentData}/>}
                             </ul>
                         </div>
                     </div>
