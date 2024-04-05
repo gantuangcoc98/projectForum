@@ -1,7 +1,7 @@
 import "../App.css"
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logo-transparent-cropped.png';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as MdIcons from "react-icons/md";
 import * as BsIcons from "react-icons/bs";
 import profile from '../images/logo.png';
@@ -10,9 +10,11 @@ import { data } from '../sample-data/postdata';
 export default function SideBar() {
     const [loginStatus, setLoginStatus] = useState(false);
     const [loginHover, setLoginHover] = useState('w-[20px]');
-    const [profileToggle, setProfileToggle] = useState(false);
+    const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
     const [username, setUsername] = useState('username');
     
+    const profileOptions = useRef(null);
+
     const navigate = useNavigate();
 
     const createPost = () => {
@@ -25,6 +27,19 @@ export default function SideBar() {
 
             if (LOGGED_USER !== null) {
                 setLoginStatus(true);
+
+                const handleOutsideClick = (event) => {
+                    if (profileOptions.current && !profileOptions.current.contains(event.target)) {
+                        setProfileOptionsToggle(false);
+                    }
+                }
+
+                document.addEventListener('mousedown', handleOutsideClick);
+
+                return () => {
+                    document.removeEventListener('mousedown', handleOutsideClick);
+                }
+
             } else {
                 window.localStorage.setItem('LOGGED_USER', JSON.stringify(LOGGED_USER));
                 navigate('/');
@@ -33,7 +48,7 @@ export default function SideBar() {
     )
 
     const profileMenu = () => {
-        setProfileToggle(!profileToggle);
+        setProfileOptionsToggle(!profileOptionsToggle);
     }
 
     const logout = () => {
@@ -90,8 +105,8 @@ export default function SideBar() {
                                 <span className="w-fit h-fit text-[23px] absolute right-[10px]"><BsIcons.BsThreeDots/></span>
                             </div>
 
-                            {profileToggle &&
-                                <div className="flex flex-col w-[90%] h-fit absolute top-[-150%] z-20">
+                            {profileOptionsToggle &&
+                                <div ref={profileOptions} className="flex flex-col w-[90%] h-fit absolute top-[-150%] z-20">
                                     <div className="flex flex-col  w-full h-full  pt-[10px] pb-[10px] bg-dark-gold rounded-[12px] relative">
                                         <div className="flex flex-col items-center z-20">
                                             <span className="w-full h-fit p-[10px] text-[16px] font-semibold hover:bg-light-gold hover:cursor-pointer"

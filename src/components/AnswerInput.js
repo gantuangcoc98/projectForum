@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getCurrentDate } from "./Function";
 import profile from '../images/logo.png'; 
 
-export const Answer = ({user}) => {
+export const AnswerInput = ({user}) => {
     const [loggedUser, setLoggedUser] = useState({});
     
     const [answer, setAnswer] = useState('');

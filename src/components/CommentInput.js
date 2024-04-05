@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import * as FaIcons from 'react-icons/fa';
 import { getCurrentDate, viewProfile } from './Function';
 import profile from '../images/logo.png';
 
-export const Comment = ({user}) => {
+export const CommentInput = ({user}) => {
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('');
     const [loggedUser, setLoggedUser] = useState({});
@@ -47,7 +46,8 @@ export const Comment = ({user}) => {
     return (
         <div className="flex h-fit w-full gap-[10px] border-t border-border-line p-[10px]"
             onClick={()=>textareaRef.current.focus()}>
-            <span className="w-[51px] h-[51px]"><img src={profile} alt="profile" width='100%'/></span>
+            <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80"
+                onClick={()=>viewProfile(loggedUser.userId)}><img src={profile} alt="profile" width='100%'/></span>
             <div className="flex flex-col w-full h-fit gap-[5px] text-[18px] pr-[10px] pt-[10px]">
                 <label htmlFor="comment" className="w-full h-fit">
                     <textarea ref={textareaRef} className="w-full h-fit bg-transparent focus:outline-none overflow-hidden resize-none"
