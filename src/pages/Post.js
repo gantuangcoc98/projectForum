@@ -47,7 +47,7 @@ export const Post = () => {
 
             setLoggedUser(_user);
             setPostData(data[JSON.parse(postId) - 1]);
-        }, []
+        }, [postId]
     )
 
     const openAnswer = () => {
