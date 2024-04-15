@@ -1,6 +1,6 @@
 import * as Io5Icons from "react-icons/io5";
 import '../App.css';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { data } from '../sample-data/postdata';
