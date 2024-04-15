@@ -3,32 +3,35 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
-export const Welcome = () => {
-  const [firstname, setFirstName] = useState("");
-  const [lastname, setLastName] = useState("");
+export const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigate = useNavigate();
-
-  const register = () => {
-    //para mo store ang data sa local storage gar
-    const userData = {
-      username: username,
-      password: password,
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
-    console.log("Registration in process...");
-    navigate("/register");
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // retrieve ang user gikan sa local storage
+    const storedUserData = JSON.parse(localStorage.getItem("userData"));
+    if (storedUserData) {
+      // checking kung match ang data nga naas local storage
+      if (
+        username === storedUserData.username &&
+        password === storedUserData.password
+      ) {
+        // If login successful, navigate to desired route
+        navigate("/post");
+      } else {
+        // if invalid
+        alert("Invalid username or password");
+      }
+    } else {
+      // if walay data
+      alert("User not found. Please register first.");
+    }
   };
 
-  const login = () => {
-    console.log("Logging in...");
-    window.localStorage.setItem("LOGGED_USER", JSON.stringify(1));
-    navigate("/home");
-
-    window.location.reload();
+  const register = () => {
+    navigate("/register");
   };
 
   return (
@@ -43,44 +46,23 @@ export const Welcome = () => {
         </span>
 
         <div className="flex flex-col w-[75%] h-fit">
-          <span className="text-[25px] p-0 m-0">Where</span>
+          <span className="text-[35px] p-0 m-0  font-bold">UNLOCK</span>
           <span className="flex w-full justify-start pl-[80px] text-[50px] font-bold">
-            GREAT
+            YOUR
           </span>
           <span className="flex w-full justify-end text-[50px] font-bold pr-[100px]">
-            MINDS
+            WORLD
           </span>
-          <span className="flex w-full justify-end text-[25px]">meet.</span>
         </div>
       </div>
 
       <div className="flex flex-col gap-[10px] h-full w-[50%]">
         <h1 className="w-full h-fit text-[30px] mt-[73px] pl-[20px]">
-          Join now.
+          Login to your account.
         </h1>
 
         <div className="flex justify-center w-full h-fit pt-[30px] pb-[30px] rounded-tl-[12px] bg-lighter-white">
           <div className="flex flex-col gap-[10px] w-[80%] h-fit welcome_input">
-            <div className="flex w-full h-fit gap-[20px]">
-              <label className="w-full" htmlFor="firstname">
-                First Name
-                <input
-                  type="text"
-                  id="firstname"
-                  value={firstname}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </label>
-              <label className="w-full" htmlFor="lastname">
-                Last Name
-                <input
-                  type="text"
-                  id="lastname"
-                  value={lastname}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </label>
-            </div>
             <label htmlFor="username">
               Username
               <input
@@ -99,21 +81,12 @@ export const Welcome = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </label>
-            <label htmlFor="confirmPassword">
-              Confirm Password
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </label>
             <span className="flex w-full h-fit justify-end">
               <button
                 className="w-fit h-fit text-[16px] text-lighter-white font-bold pt-[10px] pb-[10px] pl-[30px] pr-[30px] bg-light-maroon hover:bg-main-maroon rounded-[12px]"
-                onClick={() => register()}
+                onClick={handleLogin}
               >
-                Sign Up
+                Login
               </button>
             </span>
 
@@ -124,12 +97,12 @@ export const Welcome = () => {
             </div>
 
             <div className="flex flex-col gap-[10px] h-fit w-full">
-              <h3 className="text-[20px]">Already have an account?</h3>
+              <h3 className="text-[20px]">Don't have an account yet?</h3>
               <button
                 className="bg-light-gold w-full h-fit text-[16px] rounded-[12px] p-[10px] font-bold hover:bg-dark-gold"
-                onClick={() => login()}
+                onClick={register}
               >
-                Sign-in instead
+                Sign Up
               </button>
             </div>
           </div>
