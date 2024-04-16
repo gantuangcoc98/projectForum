@@ -26,7 +26,7 @@ export const Welcome = () => {
   const login = () => {
     console.log("Logging in...");
     window.localStorage.setItem("LOGGED_USER", JSON.stringify(1));
-    navigate("/home");
+    navigate("/login");
 
     window.location.reload();
   };

@@ -19,7 +19,7 @@ export const Login = () => {
         password === storedUserData.password
       ) {
         // If login successful, navigate to desired route
-        navigate("/post");
+        navigate("/home");
       } else {
         // if invalid
         alert("Invalid username or password");
