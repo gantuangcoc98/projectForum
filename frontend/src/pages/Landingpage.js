@@ -26,7 +26,7 @@ export const Landingpage = () => {
           <div>
             <button
               className="px-4 py-2 bg-red-700 text-white font-semibold rounded-full mr-4 hover:bg-red-800"
-              onClick={handleLogin} // Navigate to login page
+              onClick={() => handleLogin} // Navigate to login page
             >
               Login
             </button>
