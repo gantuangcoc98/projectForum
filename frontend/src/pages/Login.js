@@ -2,31 +2,26 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import { authorizeLogin, findUser } from "../components/Function";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = () => {
     // retrieve ang user gikan sa local storage
-    const storedUserData = JSON.parse(localStorage.getItem("userData"));
-    if (storedUserData) {
-      // checking kung match ang data nga naas local storage
-      if (
-        username === storedUserData.username &&
-        password === storedUserData.password
-      ) {
-        // If login successful, navigate to desired route
+    const user = findUser(username);
+
+    if (user != null) {
+      if (user.password === password) {
+        authorizeLogin(username);
         navigate("/home");
       } else {
-        // if invalid
-        alert("Invalid username or password");
+        console.log("Incorrect username or password");
       }
     } else {
-      // if walay data
-      alert("User not found. Please register first.");
+      console.log("User does not exist.");
     }
   };
 
@@ -84,7 +79,7 @@ export const Login = () => {
             <span className="flex w-full h-fit justify-end">
               <button
                 className="w-fit h-fit text-[16px] text-lighter-white font-bold pt-[10px] pb-[10px] pl-[30px] pr-[30px] bg-light-maroon hover:bg-main-maroon rounded-[12px]"
-                onClick={handleLogin}
+                onClick={() => handleLogin()}
               >
                 Login
               </button>

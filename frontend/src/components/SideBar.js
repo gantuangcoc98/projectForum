@@ -23,9 +23,9 @@ export default function SideBar() {
 
     useEffect(
         () => {
-            const LOGGED_USER = JSON.parse(window.localStorage.getItem('LOGGED_USER')) || null;
+            const logged_user = JSON.parse(window.localStorage.getItem('logged_user')) || null;
 
-            if (LOGGED_USER !== null) {
+            if (logged_user !== null) {
                 setLoginStatus(true);
 
                 const handleOutsideClick = (event) => {
@@ -41,7 +41,7 @@ export default function SideBar() {
                 }
 
             } else {
-                window.localStorage.setItem('LOGGED_USER', JSON.stringify(LOGGED_USER));
+                window.localStorage.setItem('logged_user', JSON.stringify(logged_user));
                 navigate('/');
             }
         }, [loginStatus]
@@ -53,7 +53,7 @@ export default function SideBar() {
 
     const logout = () => {
         console.log('Logging out...');
-        window.localStorage.setItem('LOGGED_USER', JSON.stringify(null));
+        window.localStorage.setItem('logged_user', JSON.stringify(null));
         window.location.reload();
     }
 

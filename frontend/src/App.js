@@ -1,7 +1,7 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { Welcome } from "./pages/Welcome";
+import { Register } from "./pages/Register";
 import { Post } from "./pages/Post";
 import { Landingpage } from "./pages/Landingpage";
 import { Login } from "./pages/Login";
@@ -14,7 +14,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/post/:postId" element={<Post />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Welcome />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
   );

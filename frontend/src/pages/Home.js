@@ -5,7 +5,6 @@ import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { data } from '../sample-data/postdata';
 import { useState } from "react";
-import { viewProfile } from "../components/Function";
 
 export const Home = () => {
 
@@ -87,8 +86,7 @@ export const Home = () => {
                                                     onClick={()=>viewPost(item.postId)}>
                                                     {item.title}
                                                 </span>
-                                                <span className="text[14px] hover:cursor-pointer hover:text-light-gold"
-                                                    onClick={()=>viewProfile(item.username)}>
+                                                <span className="text[14px] hover:cursor-pointer hover:text-light-gold">
                                                     {'@' + item.username}
                                                 </span>
                                             </div>

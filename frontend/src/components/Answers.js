@@ -1,4 +1,3 @@
-import { viewProfile } from "./Function"
 import profile from '../images/logo.png';
 import { useEffect, useState, useRef } from "react";
 import * as BiIcons from 'react-icons/bi';
@@ -34,16 +33,19 @@ export const Answers = ({data}) => {
             (item, index) => {
                 return (
                     <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
-                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80"
-                            onClick={()=>viewProfile(item.author)}><img src={profile} alt="profile" width="100%"/></span>
+                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80">
+                                <img src={profile} alt="profile" width="100%"/>
+                            </span>
                         
                         <div className="flex flex-col h-fit w-full text-[16px]">
                             <div className="flex w-full h-fit items-center justify-between relative">
                                 <div className="flex gap-[5px]">
-                                    <span className="text-main-maroon font-semibold hover:cursor-pointer hover:underline"
-                                        onClick={()=>viewProfile(item.author)}>{item.author}</span>
-                                    <span className="text-dark-gold hover:cursor-pointer"
-                                        onClick={()=>viewProfile(item.author)}>{'@' + item.author}</span>
+                                    <span className="text-main-maroon font-semibold hover:cursor-pointer hover:underline">
+                                        {item.author}
+                                    </span>
+                                    <span className="text-dark-gold hover:cursor-pointer">
+                                        {'@' + item.author}
+                                    </span>
                                 </div>
 
                                 <div className="flex justify-center w-fit h-fit absolute right-0">

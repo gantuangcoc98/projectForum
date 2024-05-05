@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../images/logo-transparent-cropped.png";
 import bgImage from "../images/bg.jpg";
@@ -14,6 +14,16 @@ export const Landingpage = () => {
     navigate("/register");
   };
 
+  useEffect(
+    () => {
+      // clearData(); // Uncomment this function if you want to clear the application data in local storage.
+    }, []
+  )
+
+  const clearData = () => {
+    window.localStorage.clear();
+  }
+
   return (
     <div
       className="flex flex-col justify-between h-screen bg-cover"
@@ -26,13 +36,13 @@ export const Landingpage = () => {
           <div>
             <button
               className="px-4 py-2 bg-red-700 text-white font-semibold rounded-full mr-4 hover:bg-red-800"
-              onClick={() => handleLogin} // Navigate to login page
+              onClick={() => handleLogin()} // Navigate to login page
             >
               Login
             </button>
             <button
               className="px-4 py-2 bg-red-700 text-white font-semibold rounded-full hover:bg-red-800"
-              onClick={handleRegister} // Navigate to register page
+              onClick={() => handleRegister()} // Navigate to register page
             >
               Register
             </button>

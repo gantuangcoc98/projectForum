@@ -2,8 +2,9 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import { registerAccount, userExist } from "../components/Function";
 
-export const Welcome = () => {
+export const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [username, setUsername] = useState("");
@@ -14,13 +15,24 @@ export const Welcome = () => {
 
   const register = () => {
     //para mo store ang data sa local storage gar
-    const userData = {
-      username: username,
-      password: password,
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
-    console.log("Registration in process...");
-    navigate("/register");
+    if (userExist(username)) {
+      console.log("Username already exist!");
+    } else {
+      if (password === confirmPassword) {
+        const userData = {
+          firstname: firstname,
+          lastname: lastname,
+          username: username,
+          password: password,
+        }
+        
+        registerAccount(userData);
+        console.log("Registration in process...");
+        login();
+      } else {
+        console.log("Passwords did not match!")
+      }
+    }
   };
 
   const login = () => {
@@ -39,6 +51,7 @@ export const Welcome = () => {
             src={logo}
             alt="logo"
             className="h-[100px] w-auto hover:cursor-grab"
+            onClick={() => navigate("/home")}
           />
         </span>
 
