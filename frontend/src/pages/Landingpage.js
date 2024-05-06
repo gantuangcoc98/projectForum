@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../images/logo-transparent-cropped.png";
 import bgImage from "../images/bg.jpg";
@@ -12,6 +12,14 @@ export const Landingpage = () => {
 
   const handleRegister = () => {
     navigate("/register");
+  };
+
+  useEffect(() => {
+    // clearData(); // Uncomment this function if you want to clear the application data in local storage.
+  }, []);
+
+  const clearData = () => {
+    window.localStorage.clear();
   };
 
   return (

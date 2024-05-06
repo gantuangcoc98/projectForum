@@ -10,7 +10,6 @@ import { answerData } from '../sample-data/answerData';
 import { commentData } from '../sample-data/commentData';
 import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
-import { viewProfile } from "../components/Function";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
 
@@ -132,15 +131,16 @@ export const Post = () => {
 
                     <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
                         <div className="flex gap-[10px] w-full h-fit p-[10px]">
-                            <span className="w-fit h-fit hover:cursor-pointer hover:opacity-80"
-                                onClick={()=>viewProfile(postData.username)}><img src={profile} alt="profile" width='250px'/></span>
+                            <span className="w-fit h-fit hover:cursor-pointer hover:opacity-80"><img src={profile} alt="profile" width='250px'/></span>
 
                             <div className="flex flex-col gap-[5px] h-full text-[18px]">
                                 <div className="flex gap-[5px]">
-                                    <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer"
-                                        onClick={()=>viewProfile(postData.username)}>{postData.nickname}</span>
-                                    <span className="font-light text-dark-gold hover:cursor-pointer"
-                                        onClick={()=>viewProfile(postData.username)}>{'@' + postData.username}</span>
+                                    <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer">
+                                        {postData.nickname}
+                                    </span>
+                                    <span className="font-light text-dark-gold hover:cursor-pointer">
+                                        {'@' + postData.username}
+                                        </span>
                                 </div>
 
                                 <div className="flex flex-col">

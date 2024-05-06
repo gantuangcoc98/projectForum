@@ -2,8 +2,9 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import { registerAccount, userExist } from "../components/Function";
 
-export const Welcome = () => {
+export const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [username, setUsername] = useState("");
@@ -39,6 +40,7 @@ export const Welcome = () => {
             src={logo}
             alt="logo"
             className="h-[100px] w-auto hover:cursor-grab"
+            onClick={() => navigate("/home")}
           />
         </span>
 

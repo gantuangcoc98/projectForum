@@ -1,4 +1,3 @@
-import { viewProfile } from "./Function"
 import profile from '../images/logo.png';
 import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from "react-icons/fa";
@@ -35,15 +34,18 @@ export const Comments = ({data}) => {
             (item, index) => {
                 return (
                     <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
-                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80"
-                            onClick={()=>viewProfile(item.author)}><img src={profile} alt="profile" width='100%'/></span>
+                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80">
+                            <img src={profile} alt="profile" width='100%'/>
+                        </span>
                         <div className="w-full h-fit flex flex-col text-[16px]">
                             <div className="flex items-center justify-between relative">
                                 <div className="flex gap-[5px]">
-                                    <span className="text-main-maroon font-semibold hover:underline hover:cursor-pointer"
-                                        onClick={()=>viewProfile(item.author)}>{item.author}</span>
-                                    <span className="text-dark-gold hover:cursor-pointer"
-                                        onClick={()=>viewProfile(item.author)}>{'@' + item.author}</span>
+                                    <span className="text-main-maroon font-semibold hover:underline hover:cursor-pointer">
+                                        {item.author}
+                                    </span>
+                                    <span className="text-dark-gold hover:cursor-pointer">
+                                        {'@' + item.author}
+                                    </span>
                                 </div>
                                 <div className="flex w-fit h-fit absolute right-0">
                                     <span className="text-[20px] p-[5px] hover:bg-light-white rounded-[50%] hover:cursor-pointer z-0"
