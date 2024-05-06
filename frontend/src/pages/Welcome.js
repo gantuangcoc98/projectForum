@@ -20,7 +20,7 @@ export const Welcome = () => {
     };
     localStorage.setItem("userData", JSON.stringify(userData));
     console.log("Registration in process...");
-    navigate("/register");
+    navigate("/login");
   };
 
   const login = () => {
