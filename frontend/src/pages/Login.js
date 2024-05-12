@@ -1,33 +1,64 @@
 import logo from "../images/logo-transparent-cropped.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
-import { authorizeLogin, findUser } from "../components/Function";
+import { loginUser } from "../components/Function";
 
 export const Login = () => {
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // retrieve ang user gikan sa local storage
-    const user = findUser(username);
+  const [userNotFound, setUserNotFound] = useState(false);
+  const [usernameEmpty, setUsernameEmpty] = useState(false);
+  const [passwordEmpty, setPasswordEmpty] = useState(false);
+  const [incorrectCredentials, setIncorrectCredentials] = useState(false);
 
-    if (user != null) {
-      if (user.password === password) {
-        authorizeLogin(username);
-        navigate("/home");
-      } else {
-        console.log("Incorrect username or password");
-      }
+  const handleLogin = async () => {
+    if (username === "") {
+      setUsernameEmpty(true);
+      console.log("Username is empty!");
+    } else if (password === "") {
+      setPasswordEmpty(true);
+      console.log("Password is empty!");
     } else {
-      console.log("User does not exist.");
+      const userCredentials = {
+        username: username,
+        password: password
+      }
+
+      const response = await loginUser(userCredentials);
+
+      switch (response) {
+        case 0:
+          console.log("User does not exist!");
+          setUserNotFound(true);
+          break;
+        case 1:
+          console.log("Successfully login!");
+          window.localStorage.setItem("LOGGED_USER", JSON.stringify(username));
+          navigate("/home");
+          break;
+        case -1:
+          console.log("Incorrect username or password!");
+          setIncorrectCredentials(true);
+          break;
+        default:
+          break;
+      }
     }
   };
 
   const register = () => {
     navigate("/register");
   };
+
+  useEffect(
+    () => {
+      window.localStorage.setItem("LOGGED_USER", JSON.stringify(null));
+    }, []
+  )
 
   return (
     <div className="flex h-fit w-full">
@@ -36,17 +67,18 @@ export const Login = () => {
           <img
             src={logo}
             alt="logo"
-            className="h-[100px] w-auto hover:cursor-grab"
+            className="h-[100px] w-auto hover:cursor-pointer"
+            onClick={() => navigate("/")}
           />
         </span>
 
         <div className="flex flex-col w-[75%] h-fit">
-          <span className="text-[35px] p-0 m-0  font-bold">UNLOCK</span>
-          <span className="flex w-full justify-start pl-[80px] text-[50px] font-bold">
+          <span className="text-[35px] p-0 m-0">Unlock</span>
+          <span className="flex w-full justify-start pl-[110px] text-[50px] font-bold">
             YOUR
           </span>
-          <span className="flex w-full justify-end text-[50px] font-bold pr-[100px]">
-            WORLD
+          <span className="flex w-full justify-end text-[35px] pr-[100px]">
+            World
           </span>
         </div>
       </div>
@@ -56,24 +88,40 @@ export const Login = () => {
           Login to your account.
         </h1>
 
-        <div className="flex justify-center w-full h-fit pt-[30px] pb-[30px] rounded-tl-[12px] bg-lighter-white">
+        <div className="flex justify-center w-full h-fit pt-[30px] pb-[30px] rounded-tl-[12px] rounded-bl-[12px] bg-lighter-white">
           <div className="flex flex-col gap-[10px] w-[80%] h-fit welcome_input">
             <label htmlFor="username">
-              Username
+              <div className="flex gap-[10px]">
+                Username
+                {usernameEmpty && <span className="text-[14px] text-red-500">Please input username</span>}
+                {userNotFound && <span className="text-[14px] text-red-500">User not found</span>}
+                {incorrectCredentials && <span className="text-[14px] text-red-500">Incorrect username or password</span>}
+              </div>
               <input
                 type="text"
                 id="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value)
+                  setUsernameEmpty(false);
+                  setUserNotFound(false);
+                  setIncorrectCredentials(false);
+                }}
               />
             </label>
             <label htmlFor="password">
-              Password
+              <div className="flex gap-[10px]">
+                Password
+                {passwordEmpty && <span className="text-[14px] text-red-500">Please input password</span>}
+              </div>
               <input
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setPasswordEmpty(false);
+                }}
               />
             </label>
             <span className="flex w-full h-fit justify-end">
@@ -95,7 +143,7 @@ export const Login = () => {
               <h3 className="text-[20px]">Don't have an account yet?</h3>
               <button
                 className="bg-light-gold w-full h-fit text-[16px] rounded-[12px] p-[10px] font-bold hover:bg-dark-gold"
-                onClick={register}
+                onClick={() => register()}
               >
                 Sign Up
               </button>

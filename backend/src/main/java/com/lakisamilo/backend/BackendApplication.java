@@ -1,13 +1,13 @@
-package com.lakisamilo.projectforum;
+package com.lakisamilo.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProjectForumApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProjectForumApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }

@@ -2,7 +2,7 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
-import { registerAccount, userExist } from "../components/Function";
+import { registerUser } from "../components/Function";
 
 export const Register = () => {
   const [firstname, setFirstName] = useState("");
@@ -10,26 +10,63 @@ export const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [usernameEmpty, setUsernameEmpty] = useState(false);
+  const [usernameExist, setUsernameExist] = useState(false);
+  const [passwordEmpty, setPasswordEmpty] = useState(false);
+  const [passwordMismatch, setPasswordMistMatch] = useState(false);
+  const [firstNameEmpty, setFirstNameEmpty] = useState(false);
+  const [lastNameEmpty, setLastNameEmpty] = useState(false);
 
   const navigate = useNavigate();
 
-  const register = () => {
-    //para mo store ang data sa local storage gar
-    const userData = {
-      username: username,
-      password: password,
-    };
-    localStorage.setItem("userData", JSON.stringify(userData));
-    console.log("Registration in process...");
-    navigate("/login");
+  const register = async () => {
+    if (firstname === "") {
+      setFirstNameEmpty(true);
+      console.log("First name empty!");
+    } else if (lastname === "") {
+      setLastNameEmpty(true);
+      console.log("Last name empty!");
+    }
+    else if (password !== confirmPassword) {
+      setPasswordMistMatch(true);
+      console.log("Password did not match!");
+    } else if (username === "") {
+      setUsernameEmpty(true);
+      console.log("Username is empty.");
+    } else if (password === "") {
+      setPasswordEmpty(true);
+      console.log("Password is empty.");
+    } else {
+      const userData = {
+        firstName: firstname,
+        lastName: lastname,
+        email: email,
+        username: username,
+        password: password,
+      }
+
+      const response = await registerUser(userData);
+
+      switch (response) {
+        case 0:
+          setUsernameExist(true);
+          console.log("Username already exist!");
+          break;
+        case 1:
+          console.log("Successfully registered new user!");
+          login();
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   const login = () => {
     console.log("Logging in...");
-    window.localStorage.setItem("LOGGED_USER", JSON.stringify(1));
     navigate("/login");
-
-    window.location.reload();
   };
 
   return (
@@ -39,20 +76,20 @@ export const Register = () => {
           <img
             src={logo}
             alt="logo"
-            className="h-[100px] w-auto hover:cursor-grab"
+            className="h-[100px] w-auto hover:cursor-pointer"
             onClick={() => navigate("/home")}
           />
         </span>
 
         <div className="flex flex-col w-[75%] h-fit">
-          <span className="text-[25px] p-0 m-0">Where</span>
+          <span className="text-[35px] p-0 m-0">Where</span>
           <span className="flex w-full justify-start pl-[80px] text-[50px] font-bold">
             GREAT
           </span>
           <span className="flex w-full justify-end text-[50px] font-bold pr-[100px]">
             MINDS
           </span>
-          <span className="flex w-full justify-end text-[25px]">meet.</span>
+          <span className="flex w-full justify-end text-[35px]">meet.</span>
         </div>
       </div>
 
@@ -65,49 +102,88 @@ export const Register = () => {
           <div className="flex flex-col gap-[10px] w-[80%] h-fit welcome_input">
             <div className="flex w-full h-fit gap-[20px]">
               <label className="w-full" htmlFor="firstname">
+                <div className="flex gap-[10px]">
                 First Name
+                {firstNameEmpty && <span className="text-[14px] text-red-500">Please input first name</span>}
+                </div>
                 <input
                   type="text"
                   id="firstname"
                   value={firstname}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => {
+                    setFirstName(e.target.value)
+                    setFirstNameEmpty(false)}}
                 />
               </label>
               <label className="w-full" htmlFor="lastname">
+                <div className="flex gap-[10px]">
                 Last Name
+                {lastNameEmpty && <span className="text-[14px] text-red-500">Please input last name</span>}
+                </div>
                 <input
                   type="text"
                   id="lastname"
                   value={lastname}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={(e) => {
+                    setLastName(e.target.value)
+                    setLastNameEmpty(false)}}
                 />
               </label>
             </div>
+            <label htmlFor="email">
+              Email (Optional)
+              <input
+                type="text"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
             <label htmlFor="username">
-              Username
+              <div className="flex gap-[10px] items-center">
+              Username 
+              {usernameExist && <span className="text-[14px] text-red-500">Username already exist!</span>}
+              {usernameEmpty && <span className="text-[14px] text-red-500">Please input username</span>}
+              </div>
               <input
                 type="text"
                 id="username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setUsernameExist(false);
+                  setUsernameEmpty(false);
+                }}
               />
             </label>
             <label htmlFor="password">
+              <div className="flex gap-[10px]">
               Password
+              {passwordEmpty && <span className="text-[14px] text-red-500">Please input password</span>}
+              </div>
               <input
                 type="password"
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordEmpty(false);
+                }}
               />
             </label>
             <label htmlFor="confirmPassword">
+              <div className="flex gap-[10px]">
               Confirm Password
+              {passwordMismatch && <span className="text-[14px] text-red-500">Password did not match</span>}
+              </div>
               <input
                 type="password"
                 id="confirmPassword"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setPasswordMistMatch(false);
+                }}
               />
             </label>
             <span className="flex w-full h-fit justify-end">
