@@ -210,6 +210,7 @@ export const Post = () => {
                             </div>
                         </div>
 
+                        
                         <div className="w-full h-fit" ref={commentRef}>
                             {commentToggle && <CommentInput user={loggedUser}/>}
 

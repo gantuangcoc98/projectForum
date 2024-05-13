@@ -52,6 +52,11 @@ export default function SideBar() {
         }
     }
 
+    const viewPost = (postId) => {
+        console.log('Viewing post:', postId);
+        navigate(`/post/${postId}`);
+    }
+
     useEffect(
         () => {
             if (!loginStatus) {
@@ -90,7 +95,8 @@ export default function SideBar() {
                                     return (
                                         <li key={index}>
                                             <div className="flex w-full h-fit relative">
-                                                <Link to='/postID' className="text-[14px] w-full hover:underline hover:cursor-pointer z-10">{item.title}</Link>
+                                                <span className="text-[14px] w-full hover:underline hover:cursor-pointer z-10"
+                                                    onClick={() => viewPost(item.postId)}>{item.title}</span>
                                                 <span className="text-[12px] absolute right-0 z-0">{item.date}</span>
                                             </div>
                                         </li>

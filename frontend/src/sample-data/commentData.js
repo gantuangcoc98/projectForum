@@ -17,4 +17,10 @@ export const commentData = [
         author: 'Commentor3',
         date: 'June 29, 2002',
     },
+    {
+        commentId: 4,
+        content: 'this is a comment 4',
+        author: 'Commentor4',
+        date: 'June 29, 2002',
+    },
 ]
