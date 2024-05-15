@@ -1,5 +1,5 @@
 import "../App.css"
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import logo from '../images/logo-transparent-cropped.png';
 import { useState, useEffect, useRef } from 'react';
 import * as MdIcons from "react-icons/md";
@@ -11,7 +11,6 @@ import axios from 'axios';
 export default function SideBar() {
     const [loginStatus, setLoginStatus] = useState(false);
     const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
-    const [username, setUsername] = useState('username');
 
     const [loggedUser, setLoggedUser] = useState({});
     
@@ -126,7 +125,7 @@ export default function SideBar() {
                                             </span>
                                             <span className="w-full h-fit p-[10px] text-[16px] font-semibold hover:bg-light-gold hover:cursor-pointer"
                                                 onClick={()=>logout()}>
-                                                {'Logout @' + username}
+                                                {'Logout @' + loggedUser.username}
                                             </span>
                                         </div>
                                         <span className="flex justify-center w-full text-[50px] text-dark-gold absolute bottom-[-25%] z-10"><MdIcons.MdArrowDropDown/></span>

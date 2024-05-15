@@ -1,5 +1,7 @@
 package com.lakisamilo.backend.services;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,24 +37,16 @@ public class PostService {
         return 0;
     }
 
-    public int deletePost(long postId) {
-        Optional<Post> post = postRepo.findById(postId);
+    public Post getPost(long postId) {
+        Optional<Post> p = postRepo.findById(postId);
 
-        if (post.isPresent()) {
-            Post update = post.get();
+        if (p.isPresent()) return p.get();
 
-            if (update.getState() == -1) {
-                return -1;
-            }
+        return null;
+    }
 
-            update.setState(-1);
-
-            postRepo.save(update);
-
-            return 1;
-        }
-
-        return 0;
+    public List<Post> getAllPosts() {
+        return postRepo.findAll();
     }
 
     public int updatePost(Post p) {
@@ -75,11 +69,25 @@ public class PostService {
         return 0;
     }
 
-    public Post getPost(long postId) {
-        Optional<Post> p = postRepo.findById(postId);
+    public int deletePost(long postId) {
+        Optional<Post> post = postRepo.findById(postId);
 
-        if (p.isPresent()) return p.get();
+        if (post.isPresent()) {
+            Post update = post.get();
 
-        return null;
+            if (update.getState() == -1) {
+                return -1;
+            }
+
+            update.setState(-1);
+            update.setCreationDate(new Date());
+            postRepo.save(update);
+
+            return 1;
+        }
+
+        return 0;
     }
+
 }
+ 

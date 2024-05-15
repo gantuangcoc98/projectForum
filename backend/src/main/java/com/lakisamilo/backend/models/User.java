@@ -1,5 +1,6 @@
 package com.lakisamilo.backend.models;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -13,16 +14,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tblUser")
 public class User {
@@ -69,4 +67,11 @@ public class User {
 
     @Column(name = "state")
     private int state;
+
+    @Column(name = "creationDate")
+    private Date creationDate;
+
+    public User() {
+        this.creationDate = new Date();
+    }
 }

@@ -17,11 +17,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tblPost")
 public class Post {
@@ -58,4 +56,10 @@ public class Post {
 
     @OneToMany(mappedBy = "postTag", cascade = CascadeType.ALL)
     private List<Tag> tags;
+
+    public Post() {
+        this.creationDate = new Date();
+        this.state = 0;
+        this.answered = false;
+    }
 }

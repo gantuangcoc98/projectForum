@@ -1,5 +1,6 @@
 package com.lakisamilo.backend.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,10 @@ public class UserService {
         if (user.isPresent()) return user.get();
 
         return null;
+    }
+
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
     }
 
     public int updateUser(User u) {
