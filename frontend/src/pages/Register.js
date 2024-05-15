@@ -98,7 +98,7 @@ export const Register = () => {
           Join now.
         </h1>
 
-        <div className="flex justify-center w-full h-fit pt-[30px] pb-[30px] rounded-tl-[12px] bg-lighter-white">
+        <div className="flex justify-center w-full h-fit pt-[30px] pb-[30px] rounded-tl-[12px] rounded-bl-[12px] bg-lighter-white">
           <div className="flex flex-col gap-[10px] w-[80%] h-fit welcome_input">
             <div className="flex w-full h-fit gap-[20px]">
               <label className="w-full" htmlFor="firstname">

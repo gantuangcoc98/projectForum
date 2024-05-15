@@ -1,6 +1,9 @@
 package com.lakisamilo.backend.models;
 
+import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -8,15 +11,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tblUser")
 public class User {
@@ -37,9 +41,37 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @OneToMany(mappedBy = "postAuthor", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "answerAuthor", cascade = CascadeType.ALL)
+    private List<Answer> answers;
+
+    @OneToMany(mappedBy = "commentAuthor", cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "tagAuthor", cascade = CascadeType.ALL)
+    private List<Tag> tags;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_watchedTag",
+        joinColumns = @JoinColumn(name = "userId"),
+        inverseJoinColumns = @JoinColumn(name = "tagId")
+    )
+    List<Tag> watchedTags;
+
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Post> posts;
+    @Column(name = "state")
+    private int state;
+
+    @Column(name = "creationDate")
+    private Date creationDate;
+
+    public User() {
+        this.creationDate = new Date();
+    }
 }

@@ -3,6 +3,7 @@ package com.lakisamilo.backend.models;
 import java.util.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,11 +30,11 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
-    private User author;
+    private User commentAuthor;
 
     @ManyToOne
-    @JoinColumn(name = "postId", nullable = false)
-    private Post post;
+    @JoinColumn(name = "postId", nullable = true)
+    private Post postComment;
 
     @Column(name = "date")
     private Date date;
