@@ -6,12 +6,14 @@ import * as MdIcons from "react-icons/md";
 import * as BsIcons from "react-icons/bs";
 import profile from '../images/logo.png';
 import { data } from '../sample-data/postdata';
+import axios from 'axios';
 
 export default function SideBar() {
     const [loginStatus, setLoginStatus] = useState(false);
-    const [loginHover, setLoginHover] = useState('w-[20px]');
     const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
     const [username, setUsername] = useState('username');
+
+    const [loggedUser, setLoggedUser] = useState({});
     
     const profileOptions = useRef(null);
 
@@ -21,45 +23,53 @@ export default function SideBar() {
         console.log('Creating post...');
     }
 
-    useEffect(
-        () => {
-            const logged_user = JSON.parse(window.localStorage.getItem('logged_user')) || null;
-
-            if (logged_user !== null) {
-                setLoginStatus(true);
-
-                const handleOutsideClick = (event) => {
-                    if (profileOptions.current && !profileOptions.current.contains(event.target)) {
-                        setProfileOptionsToggle(false);
-                    }
-                }
-
-                document.addEventListener('mousedown', handleOutsideClick);
-
-                return () => {
-                    document.removeEventListener('mousedown', handleOutsideClick);
-                }
-
-            } else {
-                window.localStorage.setItem('logged_user', JSON.stringify(logged_user));
-                navigate('/');
-            }
-        }, [loginStatus]
-    )
-
     const profileMenu = () => {
         setProfileOptionsToggle(!profileOptionsToggle);
     }
 
     const logout = () => {
         console.log('Logging out...');
-        window.localStorage.setItem('logged_user', JSON.stringify(null));
-        window.location.reload();
+        window.localStorage.setItem('LOGGED_USER', JSON.stringify(null));
+        navigate("/login");
     }
 
     const viewProfile = () => {
         console.log('Viewing profile...');
     }
+
+    const fetchUser = async (username) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/getUser?username=${username}`);
+
+            if (response.data != null) {
+                setLoggedUser(response.data);
+                setLoginStatus(true);
+            } else {
+                console.log("Failed to fetch get request getUser?username");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    const viewPost = (postId) => {
+        console.log('Viewing post:', postId);
+        navigate(`/post/${postId}`);
+    }
+
+    useEffect(
+        () => {
+            if (!loginStatus) {
+                const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
+    
+                if (username != null) {
+                    fetchUser(username);
+                } else {
+                    navigate("/");
+                }
+            }
+        }, [loginStatus]
+    )
 
     return (
         <>
@@ -85,7 +95,8 @@ export default function SideBar() {
                                     return (
                                         <li key={index}>
                                             <div className="flex w-full h-fit relative">
-                                                <Link to='/postID' className="text-[14px] w-full hover:underline hover:cursor-pointer z-10">{item.title}</Link>
+                                                <span className="text-[14px] w-full hover:underline hover:cursor-pointer z-10"
+                                                    onClick={() => viewPost(item.postId)}>{item.title}</span>
                                                 <span className="text-[12px] absolute right-0 z-0">{item.date}</span>
                                             </div>
                                         </li>
@@ -99,8 +110,8 @@ export default function SideBar() {
                                 onClick={()=>profileMenu()}>
                                 <img src={profile} alt="profile" width='50px' height='auto'/>
                                 <div className="flex flex-col">
-                                    <span className="font-semibold">Your Name</span>
-                                    <span className="font-light">@username</span>
+                                    <span className="font-semibold">{loggedUser.firstName} {loggedUser.lastName}</span>
+                                    <span className="font-light">@{loggedUser.username}</span>
                                 </div>
                                 <span className="w-fit h-fit text-[23px] absolute right-[10px]"><BsIcons.BsThreeDots/></span>
                             </div>
