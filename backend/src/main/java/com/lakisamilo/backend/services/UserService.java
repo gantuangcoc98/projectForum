@@ -19,18 +19,10 @@ public class UserService {
 
         if (user.isPresent()) {
             return 0;
-        } else {
-            User newUser = new User();
-            newUser.setEmail(u.getEmail());
-            newUser.setFirstName(u.getFirstName());
-            newUser.setLastName(u.getLastName());
-            newUser.setUsername(u.getUsername());
-            newUser.setPassword(u.getPassword());
-
-            userRepo.save(newUser);
-
-            return 1;
         }
+
+        userRepo.save(u);
+        return 1;
     }
 
     public int loginUser(String username, String password) {
@@ -55,5 +47,47 @@ public class UserService {
         if (user.isPresent()) return user.get();
 
         return null;
+    }
+
+    public int updateUser(User u) {
+        Optional<User> _u = userRepo.findById(u.getUserId());
+
+        if (_u.isPresent()) {
+            User found = _u.get();
+
+            if (found.getState() == -1) {
+                return -1;
+            }
+
+            found.setEmail(u.getEmail());
+            found.setFirstName(u.getFirstName());
+            found.setLastName(u.getLastName());
+            found.setPassword(u.getPassword());
+            found.setState(1);
+
+            userRepo.save(found);
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public int deleteUser(long userId) {
+        Optional<User> u = userRepo.findById(userId);
+
+        if (u.isPresent()) {
+            User found = u.get();
+
+            if (found.getState() == -1) {
+                return -1;
+            }
+
+            found.setState(-1);
+            userRepo.save(found);
+
+            return 1;
+        }
+
+        return 0;
     }
 }

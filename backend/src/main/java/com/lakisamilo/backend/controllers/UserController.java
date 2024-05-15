@@ -36,5 +36,17 @@ public class UserController {
     public User getUser(@RequestParam("username") String username) {
         return userService.getUser(username);
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping(path = "updateUser")
+    public int updateUser(@RequestBody User u) {
+        return userService.updateUser(u);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "deleteUser")
+    public int deleteUser(@RequestParam("userId") long userId) {
+        return userService.deleteUser(userId);
+    }
     
 }
