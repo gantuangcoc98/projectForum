@@ -18,10 +18,8 @@ export const Login = () => {
   const handleLogin = async () => {
     if (username === "") {
       setUsernameEmpty(true);
-      console.log("Username is empty!");
     } else if (password === "") {
       setPasswordEmpty(true);
-      console.log("Password is empty!");
     } else {
       const userCredentials = {
         username: username,
@@ -32,7 +30,6 @@ export const Login = () => {
 
       switch (response) {
         case 0:
-          console.log("User does not exist!");
           setUserNotFound(true);
           break;
         case 1:
@@ -41,7 +38,6 @@ export const Login = () => {
           navigate("/home");
           break;
         case -1:
-          console.log("Incorrect username or password!");
           setIncorrectCredentials(true);
           break;
         default:

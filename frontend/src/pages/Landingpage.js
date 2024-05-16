@@ -1,28 +1,8 @@
-import { React, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../images/logo-transparent-cropped.png";
+import { React } from "react";
 import bgImage from "../images/bg.jpg";
+import { Header } from "../components/Header";
 
 export const Landingpage = () => {
-  const navigate = useNavigate();
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleRegister = () => {
-    navigate("/register");
-  };
-
-  const clearData = () => {
-    window.localStorage.clear();
-  }
-
-  useEffect(
-    () => {
-      // clearData(); //Uncomment this to clear application data
-    }, []
-  )
 
   return (
     <div
@@ -30,25 +10,7 @@ export const Landingpage = () => {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       {/* Header section */}
-      <header className="bg-lighter-white py-4">
-        <div className="container mx-auto flex justify-between items-center px-4">
-          <img src={logo} alt="logo" className="h-12 w-auto hover:cursor-pointer" onClick={() => navigate("/")}/>
-          <div className="flex items-center gap-[10px]">
-            <button
-              className="px-[18px] py-[5px] text-main-maroon font-semibold rounded-[12px] hover:text-white border border-main-maroon hover:bg-main-maroon"
-              onClick={() => handleLogin()} // Navigate to login page
-            >
-              Login
-            </button>
-            <button
-              className="px-[18px] py-[5px] bg-light-maroon text-white font-semibold rounded-[12px] hover:bg-main-maroon"
-              onClick={() => handleRegister()} // Navigate to register page
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main content */}
       <div className="flex flex-col items-center justify-center">

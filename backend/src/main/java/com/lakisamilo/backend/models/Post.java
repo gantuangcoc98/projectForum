@@ -3,7 +3,7 @@ package com.lakisamilo.backend.models;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,7 +39,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
-    @JsonBackReference
+    @JsonIgnoreProperties("posts")
     private User postAuthor;
 
     @OneToMany(mappedBy = "postComment", cascade = CascadeType.ALL)

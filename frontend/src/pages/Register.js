@@ -77,7 +77,7 @@ export const Register = () => {
             src={logo}
             alt="logo"
             className="h-[100px] w-auto hover:cursor-pointer"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           />
         </span>
 
