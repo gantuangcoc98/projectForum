@@ -29,6 +29,76 @@ const loginUser = async (userCredentials) => {
     }
 }
 
+const fetchUser = async (username) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getUser?username=${username}`);
+
+        if (response.data != null) {
+            return response.data;
+        }
+
+        console.log("Failed to fetch get request getUser?username");
+        return null;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+
+// START OF Post Model CRUD
+
+const createPost = async (postData) => {
+    try {
+        const response = await axios.post("http://localhost:8080/createPost", postData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const updatePost = async (postData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/updatePost", postData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const getPost = async (postId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getPost?postId=${postId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const getAllPosts = async () => {
+    try {
+        const response = await axios.get("http://localhost:8080/getAllPosts");
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error)
+    }
+}
+
+const deletePost = async (postId) => {
+    try {
+        const response = await axios.put(`http://localhost:8080/deletePost?postId=${postId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// END OF Post Model CRUD
+
 export {
-    getCurrentDate, registerUser, loginUser
+    getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost
 }

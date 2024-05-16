@@ -57,9 +57,5 @@ public class UserController {
     public int loginUser(@RequestBody UserCredentials u) {
         return userService.loginUser(u.getUsername(), u.getPassword());
     }
-
-    
-
-    
     
 }

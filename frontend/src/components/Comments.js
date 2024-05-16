@@ -54,10 +54,10 @@ export const Comments = ({data}) => {
                                     </span>
 
                                     {selectedCommentItem === index &&
-                                        <div key={index} ref={commentOptionRef} className="flex flex-col h-fit w-[160px] absolute top-0 left-0 rounded-[12px] border border-border-line bg-lighter-white z-10">
+                                        <div key={index} ref={commentOptionRef} className="flex flex-col h-fit w-[175px] absolute top-0 left-0 rounded-[12px] border border-border-line bg-lighter-white z-10">
                                             <div className="flex items-center gap-[5px] p-[10px] rounded-[12px]  hover:cursor-pointer hover:bg-red-300">
                                                 <span className="text-[20px]"><MdIcons.MdDeleteForever/></span>
-                                                <span className="font-semibold">Delete answer</span>
+                                                <span className="font-semibold">Delete comment</span>
                                             </div>
                                         </div>
                                     }

@@ -4,19 +4,23 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { data } from '../sample-data/postdata';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchUser, getAllPosts } from "../components/Function";
 
 export const Home = () => {
+
+    const [loggedUser, setLoggedUser] = useState({});
+    const [loginStatus, setLoginStatus] = useState(false);
+
+    const [postData, setPostData] = useState([]);
 
     const navigate = useNavigate();
 
     const display = (state) => {
         switch (state) {
             case 'fyp':
-                console.log('Displaying for you page...')
                 break;
             case 'following':
-                console.log('Displaying following page...');
                 break;
             default:
                 break;
@@ -24,13 +28,50 @@ export const Home = () => {
     }
 
     const viewPost = (postId) => {
-        console.log('Viewing post:', postId);
         navigate(`/post/${postId}`);
     }
 
+    const handleFetchUser = async (username) => {
+        const user = await fetchUser(username);
+
+        if (user != null) {
+            setLoggedUser(user);
+            setLoginStatus(true);
+        } else {
+            console.log("Error fetching user login request.")
+        }
+    }
+
+    const handleFetchAllPosts = async () => {
+        const allPosts = await getAllPosts();
+
+        const filteredPosts = allPosts.filter(post => post.state !== -1);
+
+        setPostData(filteredPosts);
+    }
+
+    useEffect(
+        () => {
+            if (!loginStatus) {
+                try {
+                    const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
+
+                    if (username != null) {
+                        handleFetchUser(username);
+                        handleFetchAllPosts();
+                    } else {
+                        navigate('/login');
+                    }
+                } catch (error) {
+                    console.error("Error:", error)
+                }
+            }
+        }, [loginStatus]
+    )
+
     return (
         <>
-            <SideBar />
+            <SideBar userData={loggedUser}/>
             
             <div className="flex w-full h-full pl-[25%]">
                 <div className="w-[70%] h-full relative">
@@ -53,18 +94,18 @@ export const Home = () => {
                     </div>
 
                     <ul className="w-full h-fit border-r-[1px] border-l-[1px] border-border-line">
-                        {data.map(
+                        {postData.map(
                             (item, index) => {
                                 return (
                                     <li key={index} className="flex gap-[10px] w-full pl-[20px] pr-[20px] pt-[10px] pb-[10px] border-b border-border-line hover:bg-dark-white hover:cursor-pointer"
                                         onClick={()=>viewPost(item.postId)}>
-                                        <span className="w-[51px]"><img src={profile} alt="profile" width="100%" height="auto" /></span>
+                                        <span className="w-[51px]"><img src={profile} alt="profile" width="100%" height="auto" className="rounded-[50%]"/></span>
                                         <div className="flex flex-col">
                                             <div className="flex gap-[5px]">
-                                                <span className="text-main-maroon font-semibold">{item.nickname}</span>
-                                                <span className="text-dark-gold font-light">{'@' + item.username}</span>
+                                                <span className="text-main-maroon font-semibold">{item.postAuthor.firstName} {item.postAuthor.lastName}</span>
+                                                <span className="text-dark-gold font-light">{'@' + item.postAuthor.username}</span>
                                             </div>
-                                            <p>{item.title}</p>
+                                            <span className="font-semibold text-[16px]">{item.title}</span>
                                         </div>
                                     </li>
                                 )

@@ -59,7 +59,7 @@ public class PostService {
             else {
                 found.setTitle(p.getTitle());
                 found.setDescription(p.getDescription());
-                found.setCreationDate(p.getCreationDate());
+                found.setCreationDate(new Date());
                 found.setState(1);
                 postRepo.save(found);
                 return 1;

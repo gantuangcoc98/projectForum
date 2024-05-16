@@ -3,7 +3,7 @@ package com.lakisamilo.backend.models;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +23,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Table(name = "tblUser")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,7 +43,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "postAuthor", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnoreProperties("postAuthor")
     private List<Post> posts;
 
     @OneToMany(mappedBy = "answerAuthor", cascade = CascadeType.ALL)
