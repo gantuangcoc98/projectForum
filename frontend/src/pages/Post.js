@@ -1,8 +1,8 @@
-import SideBar from "../components/SideBar"
+import SideBar from "../components/SideBar";
 import { useEffect, useRef, useState } from "react";
-import profile from '../images/logo.png';
+import profile from "../images/logo.png";
 import * as FaIcons from "react-icons/fa";
-import * as BiIcons from 'react-icons/bi';
+import * as BiIcons from "react-icons/bi";
 import * as MdIcons from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { answerData } from '../sample-data/answerData';
@@ -30,70 +30,72 @@ export const Post = () => {
     const [loggedUser, setLoggedUser] = useState({});
     const [loginStatus, setLoginStatus] = useState(false);
 
-    const [answerToggle, setAnswerToggle] = useState(false);
-    const [commentToggle, setCommentToggle] = useState(false);
+  const [answerToggle, setAnswerToggle] = useState(false);
+  const [commentToggle, setCommentToggle] = useState(false);
 
-    const [upVote, setUpVote] = useState('text-black');
-    const [downVote, setDownVote] = useState('text-black');
-    const [comments, setComments] = useState('text-black');
-    const [upVoteBackground, setUpVoteBackground] = useState('bg-transparent');
-    const [downVoteBackground, setDownVoteBackground] = useState('bg-transparent');
-    const [commentsBackground, setCommentsBackground] = useState('bg-transparent');
+  const [upVote, setUpVote] = useState("text-black");
+  const [downVote, setDownVote] = useState("text-black");
+  const [comments, setComments] = useState("text-black");
+  const [upVoteBackground, setUpVoteBackground] = useState("bg-transparent");
+  const [downVoteBackground, setDownVoteBackground] =
+    useState("bg-transparent");
+  const [commentsBackground, setCommentsBackground] =
+    useState("bg-transparent");
 
-    const [showAnswers, setShowAnswers] = useState(true);
+  const [showAnswers, setShowAnswers] = useState(true);
 
     const commentRef = useRef(null);
 
-    const openAnswer = () => {
-        setAnswerToggle(true);
-        setCommentToggle(false);
-        display('answers');
-    }
+  const openAnswer = () => {
+    setAnswerToggle(true);
+    setCommentToggle(false);
+    display("answers");
+  };
 
-    const openComment = () => {
-        setCommentToggle(true);
-        setAnswerToggle(false);
-        display('comments');
-        commentRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+  const openComment = () => {
+    setCommentToggle(true);
+    setAnswerToggle(false);
+    display("comments");
+    commentRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
-    const iconMouseEnter = (icon) => {
-        switch(icon) {
-            case 'up':
-                setUpVote('text-main-maroon font-semibold');
-                setUpVoteBackground('rounded-[50%] p-[5px] bg-dark-white');
-                break;
-            case 'down':
-                setDownVote('text-main-maroon font-semibold');
-                setDownVoteBackground('rounded-[50%] p-[5px] bg-dark-white');
-                break;
-            case 'comments':
-                setComments('text-main-maroon font-semibold');
-                setCommentsBackground('rounded-[50%] p-[5px] bg-dark-white');
-                break;
-            default:
-                break;
-        }
+  const iconMouseEnter = (icon) => {
+    switch (icon) {
+      case "up":
+        setUpVote("text-main-maroon font-semibold");
+        setUpVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
+        break;
+      case "down":
+        setDownVote("text-main-maroon font-semibold");
+        setDownVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
+        break;
+      case "comments":
+        setComments("text-main-maroon font-semibold");
+        setCommentsBackground("rounded-[50%] p-[5px] bg-dark-white");
+        break;
+      default:
+        break;
     }
+  };
 
-    const iconMouseLeave = (icon) => {
-        switch(icon) {
-            case 'up':
-                setUpVote('text-black');
-                setUpVoteBackground('bg-transparent');
-                break;
-            case 'down':
-                setDownVote('text-black');
-                setDownVoteBackground('bg-transparent');
-                break;
-            case 'comments':
-                setComments('text-black');
-                setCommentsBackground('bg-transparent');
-                break;
-            default:
-                break;
-        }
+  const iconMouseLeave = (icon) => {
+    switch (icon) {
+      case "up":
+        setUpVote("text-black");
+        setUpVoteBackground("bg-transparent");
+        break;
+      case "down":
+        setDownVote("text-black");
+        setDownVoteBackground("bg-transparent");
+        break;
+      case "comments":
+        setComments("text-black");
+        setCommentsBackground("bg-transparent");
+        break;
+      default:
+        break;
     }
+  };
 
     const display = (state) => {
         switch(state) {
@@ -206,15 +208,17 @@ export const Post = () => {
         <>
             <SideBar userData={loggedUser} />
 
-            <div className="flex w-full h-full pl-[25%]">
-                <div className="w-[70%] h-full">
-                    <div className="flex w-full gap-[30px] h-[61px] items-center justify-start pl-[20px] border border-border-line bg-light-white">
-                        <span className="text-[16px] p-[10px] rounded-[50%] hover:bg-dark-white hover:cursor-pointer"
-                            onClick={()=>navigate(-1)}>
-                            <FaIcons.FaArrowLeft />
-                        </span>
-                        <span className="text-[20px] font-semibold">Post</span>
-                    </div>
+      <div className="flex w-full h-full pl-[25%]">
+        <div className="w-[70%] h-full">
+          <div className="flex w-full gap-[30px] h-[61px] items-center justify-start pl-[20px] border border-border-line bg-light-white">
+            <span
+              className="text-[16px] p-[10px] rounded-[50%] hover:bg-dark-white hover:cursor-pointer"
+              onClick={() => navigate(-1)}
+            >
+              <FaIcons.FaArrowLeft />
+            </span>
+            <span className="text-[20px] font-semibold">Post</span>
+          </div>
 
                     {!postDeleted ? 
                         <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
