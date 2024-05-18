@@ -1,8 +1,10 @@
 import React from "react";
 import avatar from "../images/logo.png";
 
-const ProfileContent = () => {
+const ProfileContent = ({userData}) => {
+  
   const username = "John Doe";
+
   return (
     <div className="flex items-center justify-center mt-10">
       <div className="flex items-center space-x-4 -ml-50 w-full">
@@ -13,7 +15,7 @@ const ProfileContent = () => {
           alt={`${username}'s Avatar`}
         />
         <div className="flex flex-col items-start">
-          <h1 className="text-2xl font-bold text-gray-800">u/{username}</h1>
+          <h1 className="text-2xl font-bold text-gray-800">u/{userData.firstName} {userData.lastName}</h1>
           <button className="mt-4 bg-main-maroon text-white px-6 py-2 rounded-full focus:outline-none">
             Overview
           </button>

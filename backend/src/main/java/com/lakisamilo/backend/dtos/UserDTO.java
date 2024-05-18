@@ -10,17 +10,17 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserDTO {
 
-    private long userId;
+    private long userId; // No need
     private String username;
     private String password;
     private String email;
     private String firstName;
     private String lastName;
-    private int state;
-    private List<Long> posts;
-    private List<Long> answers;
-    private List<Long> tags;
-    private List<Long> comments;
+    private int state; // No need 
+    private List<Long> posts; // No need
+    private List<Long> answers; // No need
+    private List<Long> tags; // No need
+    private List<Long> comments; // No need
 
     public UserDTO() {
         this.posts = new ArrayList<Long>();

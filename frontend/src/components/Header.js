@@ -3,13 +3,15 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useEffect, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 
-export const Header = () => {
+export const Header = ({inProfile}) => {
 
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
 
   const [loginStatus, setLoginStatus] = useState(false);
+
+  const [iAmInProfile, setIAmInProfile] = useState(false);
 
   const handleLogin = () => {
       navigate("/login");
@@ -62,6 +64,14 @@ export const Header = () => {
             </button>
           </div>
         }
+
+        {inProfile &&
+          <>
+            button
+
+          </>
+        }
+        
       </div>
     </header>
   )

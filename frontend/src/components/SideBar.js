@@ -28,7 +28,7 @@ export default function SideBar({userData, postData}) {
     }
 
     const viewProfile = () => {
-        console.log('Viewing profile...');
+        navigate('/profile');
     }
 
     const viewPost = (postId) => {

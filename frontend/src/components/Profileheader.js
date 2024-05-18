@@ -3,6 +3,7 @@ import { FaBell, FaEdit, FaComments } from "react-icons/fa";
 import logo from "../images/logo-transparent-cropped.png";
 import avatar from "../images/logo.png";
 import SideBar from "../components/Profilesidebar";
+import { useNavigate } from "react-router-dom";
 
 const ProfileHeader = ({ username }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -10,6 +11,8 @@ const ProfileHeader = ({ username }) => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const navigate = useNavigate();
 
   return (
     <header className="bg-white shadow-md relative">
@@ -19,6 +22,9 @@ const ProfileHeader = ({ username }) => {
             src={logo}
             alt="logo"
             className="h-12 w-auto hover:cursor-pointer"
+            onClick={
+              () => {navigate('/home')}
+            }
           />
         </div>
         <div className="flex items-center w-full max-w-md mx-auto">
