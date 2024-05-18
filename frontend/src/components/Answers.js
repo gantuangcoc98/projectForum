@@ -1,5 +1,5 @@
 import profile from '../images/logo.png';
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
@@ -113,7 +113,7 @@ export const Answers = ({data, postOwner, loggedUser}) => {
             (item, index) => {
                 return (
                     <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
-                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80">
+                        <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-60">
                                 <img src={profile} alt="profile" width="100%" className='rounded-[50%]'/>
                         </span>
                         

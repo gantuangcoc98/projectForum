@@ -71,7 +71,7 @@ export const Header = ({inProfile}) => {
 
           </>
         }
-        
+
       </div>
     </header>
   )

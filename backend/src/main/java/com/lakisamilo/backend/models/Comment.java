@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "tblComment")
 public class Comment {
     @Id
@@ -38,5 +37,13 @@ public class Comment {
 
     @Column(name = "date")
     private Date date;
+
+    @Column(name = "state")
+    private int state;
+
+    public Comment() {
+        this.date = new Date();
+        this.state = 0;
+    }
 }
 

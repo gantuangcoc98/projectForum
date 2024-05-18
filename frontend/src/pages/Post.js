@@ -5,12 +5,11 @@ import * as FaIcons from "react-icons/fa";
 import * as BiIcons from "react-icons/bi";
 import * as MdIcons from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { commentData } from '../sample-data/commentData';
 import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
-import { deletePost, fetchUser, getAnswer, getLocalUser, getPost } from "../components/Function";
+import { deletePost, fetchUser, getAnswer, getComment, getLocalUser, getPost } from "../components/Function";
 
 export const Post = () => {
     const navigate = useNavigate();
@@ -30,6 +29,7 @@ export const Post = () => {
     const postOptionRef = useRef(null);
 
     const [answerList, setAnswerList] = useState([]);
+    const [commentList, setCommentList] = useState([]);
 
     const [loggedUser, setLoggedUser] = useState({});
     const [loginStatus, setLoginStatus] = useState(false);
@@ -135,6 +135,7 @@ export const Post = () => {
             } else {
                 setPostData(post);
                 handleAnswerData(post.answers);
+                handleCommentData(post.comments);
                 handlePostOwner(post.postUsername);
             }
         } else {
@@ -219,15 +220,47 @@ export const Post = () => {
         }
     };
 
+    const handleCommentData = async (commentIdList) => {
+        if (commentIdList.length > 0) {
+            const newCommentList = await Promise.all(
+                commentIdList.map(async (commentId) => {
+                    const comment = await getComment(commentId);
+    
+                    if (comment !== "" && comment.state !== -1) {
+                        return {
+                            "commentId": comment.commentId,
+                            "content": comment.content,
+                            "author": comment.author,
+                            "username": comment.username,
+                            "date": comment.date,
+                            "state": comment.state
+                        };
+                    } else {
+                        return null;
+                    }
+                })
+            );
+    
+            // Filter out null values
+            setCommentList(newCommentList.filter(comment => comment !== null));
+        }
+    }
+
     const handlePostOwner = (username) => {
         const _username = getLocalUser();
         
         if (username === _username) {
             setPostOwner(true);
-            window.localStorage.setItem("POST_OWNED", JSON.stringify(1));
         } else {
             setPostOwner(false);
-            window.localStorage.setItem("POST_OWNED", JSON.stringify(0));
+        }
+    }
+
+    const viewProfile = (username) => {
+        if (postOwner) {
+            navigate('/profile');
+        } else {
+            navigate(`/profile/${username}`);
         }
     }
 
@@ -289,15 +322,20 @@ export const Post = () => {
                     {!postDeleted ? 
                         <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
                             <div className="flex gap-[10px] w-full h-fit p-[10px]">
-                                <span className="w-[8%] h-fit hover:cursor-pointer hover:opacity-80"><img src={profile} alt="profile" className="rounded-[50%]"/></span>
+                                <span className="w-[8%] h-fit hover:cursor-pointer hover:opacity-60">
+                                    <img src={profile} alt="profile" className="rounded-[50%]"
+                                        onClick={() => viewProfile(postData.postUsername)}/>
+                                </span>
 
                                 <div className="flex flex-col gap-[5px] h-full w-full text-[18px]">
                                     <div className="flex items-center justify-between relative w-full h-fit">
                                         <div className="flex gap-[5px]">
-                                            <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer">
+                                            <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer"
+                                                onClick={() => viewProfile(postData.postUsername)}>
                                                 {postData.postAuthor}
                                             </span>
-                                            <span className="font-light text-dark-gold hover:cursor-pointer">
+                                            <span className="font-light text-dark-gold hover:cursor-pointer"
+                                                onClick={() => viewProfile(postData.postUsername)}>
                                                 @{postData.postUsername}
                                             </span>
                                         </div>
@@ -401,11 +439,11 @@ export const Post = () => {
 
                         
                             <div className="w-full h-fit" ref={commentRef}>
-                                {commentToggle && <CommentInput user={loggedUser}/>}
+                                {commentToggle && <CommentInput user={loggedUser} postId={postId}/>}
 
                                 <ul className="flex flex-col w-full h-fit">
                                     {showAnswers ? <Answers data={answerList} postOwner={postOwner} loggedUser={loggedUser} />
-                                        : <Comments data={commentData}/>}
+                                        : <Comments data={commentList} postOwner={postOwner} loggedUser={loggedUser} />}
                                 </ul> 
                             </div>
                         </div>
