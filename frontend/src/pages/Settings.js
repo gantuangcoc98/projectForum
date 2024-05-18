@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Profileheader from "../components/Profileheader";
-import ProfileContent from "../components/ProfileContent";
 import SideNavbar from "../components/SideNavbar";
-// import Profilesidebar from "../components/Profilesidebar";
 
 export const Settings = () => {
   // Hardcoded user data
