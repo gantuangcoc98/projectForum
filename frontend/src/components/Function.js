@@ -112,6 +112,16 @@ const createAnswer = async (answerData) => {
     }
 }
 
+const updateAnswer = async (answerData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/updateAnswer", answerData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 const getAnswer = async (answerId) => {
     try {
         const response = await axios.get(`http://localhost:8080/getAnswer?answerId=${answerId}`);
@@ -142,5 +152,5 @@ const getLocalUser = () => {
 
 export {
     getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,
-    getAnswer, getLocalUser, deleteAnswer
+    getAnswer, getLocalUser, deleteAnswer, updateAnswer
 }
