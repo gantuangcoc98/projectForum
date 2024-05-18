@@ -3,13 +3,38 @@ import { useEffect, useState, useRef } from "react";
 import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
+import { deleteAnswer } from './Function';
 
-export const Answers = ({data}) => {
+export const Answers = ({data, postOwner, loggedUser}) => {
     const answerOptionRef = useRef(null);
+
+    const answerList = data;
+
     const [selectedAnswerItem, setSelectedAnswerItem] = useState(null);
 
     const showAnswerOptions = (index) => {
         setSelectedAnswerItem(index === selectedAnswerItem ? null : index);
+    }
+
+    const _deleteAnswer = async (answerId) => {
+        const response = await deleteAnswer(answerId);
+
+        switch (response) {
+            case 0:
+                console.log('Answer not found.');
+                window.location.reload();
+                break;
+            case 1:
+                console.log("Successfully deleted answer.");
+                window.location.reload();
+                break;
+            case -1:
+                console.log("Answer already deleted.");
+                window.location.reload();
+                break;
+            default:
+                break;
+        }
     }
 
     useEffect(
@@ -29,13 +54,13 @@ export const Answers = ({data}) => {
     )
 
     return (
-        data.map(
+        answerList.map(
             (item, index) => {
                 return (
                     <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
                         <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-80">
-                                <img src={profile} alt="profile" width="100%"/>
-                            </span>
+                                <img src={profile} alt="profile" width="100%" className='rounded-[50%]'/>
+                        </span>
                         
                         <div className="flex flex-col h-fit w-full text-[16px]">
                             <div className="flex w-full h-fit items-center justify-between relative">
@@ -44,27 +69,35 @@ export const Answers = ({data}) => {
                                         {item.author}
                                     </span>
                                     <span className="text-dark-gold hover:cursor-pointer">
-                                        {'@' + item.author}
+                                        {'@' + item.username}
                                     </span>
                                 </div>
 
-                                <div className="flex justify-center w-fit h-fit absolute right-0">
-                                    <span className="text-[20px] w-fit h-fit p-[5px] rounded-[50%] hover:bg-light-white hover:cursor-pointer z-0"
-                                        onClick={()=>showAnswerOptions(index)}><BiIcons.BiDotsHorizontalRounded/></span>
-                                    
-                                    {selectedAnswerItem === index &&
-                                        <div key={index} ref={answerOptionRef} className="flex flex-col h-fit w-[160px] absolute top-0 left-0 rounded-[12px] border border-border-line bg-lighter-white z-10">
-                                            <div className="flex gap-[5px] items-center p-[10px] rounded-t-[12px] text-[16px] hover:cursor-pointer hover:bg-green-300">
-                                                <span className="pl-[3px]"><FaIcons.FaCheck/></span>
-                                                <span className="font-semibold">Mark as answer</span>
+                                {(postOwner || loggedUser.username === item.username) &&
+                                    <div className="flex justify-center w-fit h-fit absolute right-0">
+                                        <span className="text-[20px] w-fit h-fit p-[5px] rounded-[50%] hover:bg-light-white hover:cursor-pointer z-0"
+                                            onClick={()=>showAnswerOptions(index)}><BiIcons.BiDotsHorizontalRounded/></span>
+                                        
+                                        {selectedAnswerItem === index &&
+                                            <div key={index} ref={answerOptionRef} className="flex flex-col h-fit w-[160px] absolute top-0 left-0 rounded-[12px] border border-border-line bg-lighter-white z-10">
+                                                {postOwner &&
+                                                    <div className="flex gap-[5px] items-center p-[10px] rounded-[12px] text-[16px] hover:cursor-pointer hover:bg-green-300">
+                                                        <span className="pl-[3px]"><FaIcons.FaCheck/></span>
+                                                        <span className="font-semibold">Mark as answer</span>
+                                                    </div>
+                                                }
+
+                                                {(postOwner || loggedUser.username === item.username) &&
+                                                    <div className="flex items-center gap-[5px] p-[10px] rounded-[12px]  hover:cursor-pointer hover:bg-red-300"
+                                                        onClick={() => _deleteAnswer(item.answerId)}>
+                                                        <span className="text-[20px]"><MdIcons.MdDeleteForever/></span>
+                                                        <span className="font-semibold">Delete answer</span>
+                                                    </div>
+                                                }
                                             </div>
-                                            <div className="flex items-center gap-[5px] p-[10px] rounded-b-[12px]  hover:cursor-pointer hover:bg-red-300">
-                                                <span className="text-[20px]"><MdIcons.MdDeleteForever/></span>
-                                                <span className="font-semibold">Delete answer</span>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
+                                        }
+                                    </div>
+                                }
                             </div>
                             <div className="h-fit w-[95%] pb-[5px]">
                                 <span>{item.content}</span>

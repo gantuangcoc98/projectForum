@@ -1,11 +1,13 @@
 package com.lakisamilo.backend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lakisamilo.backend.dtos.UserDTO;
 import com.lakisamilo.backend.models.User;
 import com.lakisamilo.backend.repositories.UserRepo;
 
@@ -42,16 +44,36 @@ public class UserService {
         return 0;
     }
 
-    public User getUser(String username) {
+    public UserDTO getUser(String username) {
         Optional<User> user = userRepo.findByUsername(username);
 
-        if (user.isPresent()) return user.get();
+        if (user.isPresent()) {
+            User found = user.get();
+            UserDTO userDto = new UserDTO();
+            userDto.setUserId(found.getUserId());
+            userDto.setUsername(found.getUsername());
+            userDto.setPassword(found.getPassword());
+            userDto.setFirstName(found.getFirstName());
+            userDto.setLastName(found.getLastName());
+            userDto.setEmail(found.getEmail());
+            userDto.setState(found.getState());
+
+            found.getPosts().forEach(post -> userDto.getPosts().add(post.getPostId()));
+            found.getAnswers().forEach(answer -> userDto.getAnswers().add(answer.getAnswerId()));
+            found.getTags().forEach(tag -> userDto.getTags().add(tag.getTagId()));
+
+            return userDto;
+        }
 
         return null;
     }
 
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> userList = userRepo.findAll();
+        List<UserDTO> userDTOs = new ArrayList<UserDTO>();
+
+        userList.forEach(user -> userDTOs.add(getUser(user.getUsername())));
+        return userDTOs;
     }
 
     public int updateUser(User u) {
@@ -67,6 +89,7 @@ public class UserService {
             found.setEmail(u.getEmail());
             found.setFirstName(u.getFirstName());
             found.setLastName(u.getLastName());
+            found.setUsername(u.getUsername());
             found.setPassword(u.getPassword());
             found.setState(1);
 

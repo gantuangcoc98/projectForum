@@ -1,8 +1,14 @@
-import { React } from "react";
+import { React, useEffect } from "react";
 import bgImage from "../images/bg.jpg";
 import { Header } from "../components/Header";
 
 export const Landingpage = () => {
+
+  useEffect(
+    () => {
+      window.localStorage.setItem('LOGGED_USER', JSON.stringify(null));
+    }, []
+  )
 
   return (
     <div

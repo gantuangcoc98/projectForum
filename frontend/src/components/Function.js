@@ -99,6 +99,48 @@ const deletePost = async (postId) => {
 
 // END OF Post Model CRUD
 
+
+// START OF Answer Model CRUD
+
+const createAnswer = async (answerData) => {
+    try {
+        const response = await axios.post("http://localhost:8080/createAnswer", answerData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const getAnswer = async (answerId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getAnswer?answerId=${answerId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const deleteAnswer = async (answerId) => {
+    try {
+        const response = await axios.put(`http://localhost:8080/deleteAnswer?answerId=${answerId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// END OF Answer Model CRUD
+
+const getLocalUser = () => {
+    const user = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
+
+    return user;
+}
+
 export {
-    getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost
+    getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,
+    getAnswer, getLocalUser, deleteAnswer
 }

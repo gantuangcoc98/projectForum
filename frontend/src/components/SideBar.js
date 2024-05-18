@@ -5,13 +5,14 @@ import { useState, useEffect, useRef } from 'react';
 import * as MdIcons from "react-icons/md";
 import * as BsIcons from "react-icons/bs";
 import profile from '../images/logo.png';
-import { data } from '../sample-data/postdata';
 
-export default function SideBar({userData}) {
+export default function SideBar({userData, postData}) {
     const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
 
     const loggedUser = userData;
-    
+
+    const postList = postData;
+
     const profileOptions = useRef(null);
 
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ export default function SideBar({userData}) {
     const viewPost = (postId) => {
         console.log('Viewing post:', postId);
         navigate(`/post/${postId}`);
+        window.location.reload();
     }
 
     useEffect(
@@ -73,7 +75,7 @@ export default function SideBar({userData}) {
                     </div>
 
                     <ul className='flex flex-col w-full h-full gap-[5px] mt-[5px] overflow-y-scroll'>
-                        {data.map(
+                        {postList.map(
                             (item, index) => {
                                 return (
                                     <li key={index}>
@@ -91,7 +93,7 @@ export default function SideBar({userData}) {
                     <div className="w-full h-fit relative z-10">
                         <div className="flex items-center gap-[10px] w-full h-fit p-[10px] rounded-[12px] hover:bg-light-white hover:cursor-pointer"
                             onClick={()=>profileMenu()}>
-                            <img src={profile} alt="profile" width='50px' height='auto'/>
+                            <img src={profile} alt="profile" width='50px' height='auto' className="rounded-[50%]"/>
                             <div className="flex flex-col">
                                 <span className="font-semibold">{loggedUser.firstName} {loggedUser.lastName}</span>
                                 <span className="font-light">@{loggedUser.username}</span>

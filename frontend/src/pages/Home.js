@@ -5,14 +5,17 @@ import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { data } from '../sample-data/postdata';
 import { useEffect, useState } from "react";
-import { fetchUser, getAllPosts } from "../components/Function";
+import { fetchUser, getAllPosts, getPost, handleUserPostData } from "../components/Function";
 
 export const Home = () => {
 
     const [loggedUser, setLoggedUser] = useState({});
+
     const [loginStatus, setLoginStatus] = useState(false);
 
-    const [postData, setPostData] = useState([]);
+    const [allPostdata, setAllPostData] = useState([]);
+
+    const [userPostData, setUserPostData] = useState([]);
 
     const navigate = useNavigate();
 
@@ -34,9 +37,10 @@ export const Home = () => {
     const handleFetchUser = async (username) => {
         const user = await fetchUser(username);
 
-        if (user != null) {
+        if (user !== null) {
             setLoggedUser(user);
             setLoginStatus(true);
+            handleUserPostData(user.posts);
         } else {
             console.log("Error fetching user login request.")
         }
@@ -47,7 +51,30 @@ export const Home = () => {
 
         const filteredPosts = allPosts.filter(post => post.state !== -1);
 
-        setPostData(filteredPosts);
+        setAllPostData(filteredPosts);
+    }
+
+    
+    const handleUserPostData = async (postIdList) => {
+        if (postIdList.length > 0) {
+            const newUserPostData = await Promise.all(
+                postIdList.map(async (postId) => {
+                    const post = await getPost(postId);
+
+                    if (post !== "" && post.state !== -1) {
+                        return {
+                            "postId": post.postId,
+                            "title": post.title,
+                            "date": post.creationDate
+                        }
+                    } else {
+                        return null;
+                    }
+                })
+            );
+
+            setUserPostData(newUserPostData.filter((post) => post !== null));
+        }
     }
 
     useEffect(
@@ -56,7 +83,7 @@ export const Home = () => {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
-                    if (username != null) {
+                    if (username !== null) {
                         handleFetchUser(username);
                         handleFetchAllPosts();
                     } else {
@@ -71,7 +98,7 @@ export const Home = () => {
 
     return (
         <>
-            <SideBar userData={loggedUser}/>
+            <SideBar userData={loggedUser} postData={userPostData}/>
             
             <div className="flex w-full h-full pl-[25%]">
                 <div className="w-[70%] h-full relative">
@@ -94,7 +121,7 @@ export const Home = () => {
                     </div>
 
                     <ul className="w-full h-fit border-r-[1px] border-l-[1px] border-border-line">
-                        {postData.map(
+                        {allPostdata.map(
                             (item, index) => {
                                 return (
                                     <li key={index} className="flex gap-[10px] w-full pl-[20px] pr-[20px] pt-[10px] pb-[10px] border-b border-border-line hover:bg-dark-white hover:cursor-pointer"
@@ -102,8 +129,8 @@ export const Home = () => {
                                         <span className="w-[51px]"><img src={profile} alt="profile" width="100%" height="auto" className="rounded-[50%]"/></span>
                                         <div className="flex flex-col">
                                             <div className="flex gap-[5px]">
-                                                <span className="text-main-maroon font-semibold">{item.postAuthor.firstName} {item.postAuthor.lastName}</span>
-                                                <span className="text-dark-gold font-light">{'@' + item.postAuthor.username}</span>
+                                                <span className="text-main-maroon font-semibold">{item.postAuthor}</span>
+                                                <span className="text-dark-gold font-light">{'@' + item.postUsername}</span>
                                             </div>
                                             <span className="font-semibold text-[16px]">{item.title}</span>
                                         </div>

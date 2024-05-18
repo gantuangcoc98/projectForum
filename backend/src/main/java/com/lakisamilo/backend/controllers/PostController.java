@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lakisamilo.backend.dtos.PostDTO;
 import com.lakisamilo.backend.models.Post;
 import com.lakisamilo.backend.services.PostService;
 
@@ -28,13 +29,13 @@ public class PostController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "getPost")
-    public Post getPost(@RequestParam("postId") long postId) {
+    public PostDTO getPost(@RequestParam("postId") long postId) {
         return postService.getPost(postId);
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "getAllPosts")
-    public List<Post> getAllPosts() {
+    public List<PostDTO> getAllPosts() {
         return postService.getAllPosts();
     }
 

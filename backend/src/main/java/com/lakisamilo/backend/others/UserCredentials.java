@@ -1,4 +1,4 @@
-package com.lakisamilo.backend.models;
+package com.lakisamilo.backend.others;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

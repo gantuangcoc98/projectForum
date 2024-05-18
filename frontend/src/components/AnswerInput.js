@@ -1,21 +1,34 @@
 import { useEffect, useRef, useState } from "react";
-import { getCurrentDate } from "./Function";
+import { createAnswer } from "./Function";
 import profile from '../images/logo.png'; 
 
-export const AnswerInput = ({user}) => {
+export const AnswerInput = ({user, postId}) => {
     const [loggedUser, setLoggedUser] = useState({});
     
     const [answer, setAnswer] = useState('');
-    const [date, setDate] = useState('');
 
     const textareaRef = useRef(null);
+
+    const processAnswer = async () => {
+        const answerData = {
+            "content": answer,
+            "postId": parseInt(postId),
+            "username": loggedUser.username
+        }
+        
+        const _answer = await createAnswer(answerData);
+
+        if (_answer !== "") {
+            console.log("Successfully submitted answer.");
+            window.location.reload();
+        } else {
+            console.log("Failed to submit answer.");
+        }
+    }
 
     useEffect(
         () => {
             setLoggedUser(user);
-
-            const date = getCurrentDate();
-            setDate(date);
             
             const textarea = textareaRef.current;
             textarea.focus();
@@ -31,17 +44,6 @@ export const AnswerInput = ({user}) => {
             };
         }, []
     )
-
-    const processAnswer = () => {
-        const _answer = {
-            answerId: 1,
-            content: answer,
-            author: loggedUser,
-            date: date,
-        }
-
-        console.log(_answer);
-    }
 
     return (
         <div className="flex w-full h-fit pl-[20px] pr-[20px] pb-[10px] gap-[10px]">

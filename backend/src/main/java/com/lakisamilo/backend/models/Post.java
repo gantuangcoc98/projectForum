@@ -49,9 +49,10 @@ public class Post {
     private int state;
 
     @Column(name = "answered")
-    private boolean answered;
+    private int answered;
 
-    @OneToMany(mappedBy = "postAnswer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "answerPost", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("answerPost")
     private List<Answer> answers;
 
     @OneToMany(mappedBy = "postTag", cascade = CascadeType.ALL)
@@ -60,6 +61,6 @@ public class Post {
     public Post() {
         this.creationDate = new Date();
         this.state = 0;
-        this.answered = false;
+        this.answered = 0;
     }
 }
