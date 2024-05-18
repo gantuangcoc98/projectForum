@@ -9,6 +9,11 @@ const Profilesidebar = ({ toggleSidebar }) => {
     navigate("/profile");
   };
 
+  const handleViewSettings = () => {
+    toggleSidebar();
+    navigate("/settings");
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-50">
       <div className="bg-white w-64 h-full shadow-lg">
@@ -28,7 +33,12 @@ const Profilesidebar = ({ toggleSidebar }) => {
           >
             View Profile
           </button>
-          {/* Add more buttons or links here as needed */}
+          <button
+            onClick={handleViewSettings}
+            className="w-full bg-main-maroon text-white py-2 rounded-lg mb-4"
+          >
+            Settings
+          </button>
         </div>
       </div>
     </div>
