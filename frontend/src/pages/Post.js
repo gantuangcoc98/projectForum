@@ -5,97 +5,99 @@ import * as FaIcons from "react-icons/fa";
 import * as BiIcons from "react-icons/bi";
 import * as MdIcons from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { answerData } from '../sample-data/answerData';
 import { commentData } from '../sample-data/commentData';
 import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
-import { deletePost, fetchUser, getPost } from "../components/Function";
+import { deletePost, fetchUser, getAnswer, getLocalUser, getPost } from "../components/Function";
 
 export const Post = () => {
     const navigate = useNavigate();
 
     const { postId } = useParams();
 
-    const [postTitle, setPostTitle] = useState('');
-    const [postDescription, setPostDescription] = useState('');
-    const [postCreationDate, setPostCreationDate] = useState('');
-    const [postAuthor, setPostAuthor] = useState({});
+    const [userPostData, setUserPostData] = useState([]);
+
+    const [postData, setPostData] = useState({});
+
     const [postDeleted, setPostDeleted] = useState(false);
 
     const [postOptionToggle, setPostOptionToggle] = useState(false);
+
+    const [postOwner, setPostOwner] = useState(false);
+
     const postOptionRef = useRef(null);
+
+    const [answerList, setAnswerList] = useState([]);
 
     const [loggedUser, setLoggedUser] = useState({});
     const [loginStatus, setLoginStatus] = useState(false);
 
-  const [answerToggle, setAnswerToggle] = useState(false);
-  const [commentToggle, setCommentToggle] = useState(false);
+    const [answerToggle, setAnswerToggle] = useState(false);
+    const [commentToggle, setCommentToggle] = useState(false);
 
-  const [upVote, setUpVote] = useState("text-black");
-  const [downVote, setDownVote] = useState("text-black");
-  const [comments, setComments] = useState("text-black");
-  const [upVoteBackground, setUpVoteBackground] = useState("bg-transparent");
-  const [downVoteBackground, setDownVoteBackground] =
-    useState("bg-transparent");
-  const [commentsBackground, setCommentsBackground] =
-    useState("bg-transparent");
+    const [upVote, setUpVote] = useState("text-black");
+    const [downVote, setDownVote] = useState("text-black");
+    const [comments, setComments] = useState("text-black");
+    const [upVoteBackground, setUpVoteBackground] = useState("bg-transparent");
+    const [downVoteBackground, setDownVoteBackground] = useState("bg-transparent");
+    const [commentsBackground, setCommentsBackground] = useState("bg-transparent");
 
-  const [showAnswers, setShowAnswers] = useState(true);
+    const [showAnswers, setShowAnswers] = useState(true);
 
     const commentRef = useRef(null);
 
-  const openAnswer = () => {
-    setAnswerToggle(true);
-    setCommentToggle(false);
-    display("answers");
-  };
+    const openAnswer = () => {
+        setAnswerToggle(true);
+        setCommentToggle(false);
+        display("answers");
+    };
 
-  const openComment = () => {
-    setCommentToggle(true);
-    setAnswerToggle(false);
-    display("comments");
-    commentRef.current.scrollIntoView({ behavior: "smooth" });
-  };
+    const openComment = () => {
+        setCommentToggle(true);
+        setAnswerToggle(false);
+        display("comments");
+        commentRef.current.scrollIntoView({ behavior: "smooth" });
+    };
 
-  const iconMouseEnter = (icon) => {
-    switch (icon) {
-      case "up":
-        setUpVote("text-main-maroon font-semibold");
-        setUpVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
-        break;
-      case "down":
-        setDownVote("text-main-maroon font-semibold");
-        setDownVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
-        break;
-      case "comments":
-        setComments("text-main-maroon font-semibold");
-        setCommentsBackground("rounded-[50%] p-[5px] bg-dark-white");
-        break;
-      default:
-        break;
-    }
-  };
+    const iconMouseEnter = (icon) => {
+        switch (icon) {
+        case "up":
+            setUpVote("text-main-maroon font-semibold");
+            setUpVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
+            break;
+        case "down":
+            setDownVote("text-main-maroon font-semibold");
+            setDownVoteBackground("rounded-[50%] p-[5px] bg-dark-white");
+            break;
+        case "comments":
+            setComments("text-main-maroon font-semibold");
+            setCommentsBackground("rounded-[50%] p-[5px] bg-dark-white");
+            break;
+        default:
+            break;
+        }
+    };
 
-  const iconMouseLeave = (icon) => {
-    switch (icon) {
-      case "up":
-        setUpVote("text-black");
-        setUpVoteBackground("bg-transparent");
-        break;
-      case "down":
-        setDownVote("text-black");
-        setDownVoteBackground("bg-transparent");
-        break;
-      case "comments":
-        setComments("text-black");
-        setCommentsBackground("bg-transparent");
-        break;
-      default:
-        break;
-    }
-  };
+    const iconMouseLeave = (icon) => {
+        switch (icon) {
+        case "up":
+            setUpVote("text-black");
+            setUpVoteBackground("bg-transparent");
+            break;
+        case "down":
+            setDownVote("text-black");
+            setDownVoteBackground("bg-transparent");
+            break;
+        case "comments":
+            setComments("text-black");
+            setCommentsBackground("bg-transparent");
+            break;
+        default:
+            break;
+        }
+    };
 
     const display = (state) => {
         switch(state) {
@@ -115,9 +117,10 @@ export const Post = () => {
     const handleFetchUser = async (username) => {
         const user = await fetchUser(username);
 
-        if (user != null) {
+        if (user !== null) {
             setLoggedUser(user);
             setLoginStatus(true);
+            handleUserPostData(user.posts);
         } else {
             console.log("Failed to fetch user.");
         }
@@ -130,10 +133,9 @@ export const Post = () => {
             if (post.state === -1) {
                 setPostDeleted(true);
             } else {
-                setPostTitle(post.title);
-                setPostDescription(post.description);
-                setPostCreationDate(post.creationDate);
-                setPostAuthor(post.postAuthor);
+                setPostData(post);
+                handleAnswerData(post.answers);
+                handlePostOwner(post.postUsername);
             }
         } else {
             navigate('/home');
@@ -169,13 +171,73 @@ export const Post = () => {
         }
     }
 
+    const handleUserPostData = async (postIdList) => {
+        if (postIdList.length > 0) {
+            const newUserPostData = await Promise.all(
+                postIdList.map(async (postId) => {
+                    const post = await getPost(postId);
+
+                    if (post !== "" && post.state !== -1) {
+                        return {
+                            "postId": post.postId,
+                            "title": post.title,
+                            "date": post.creationDate
+                        }
+                    } else {
+                        return null;
+                    }
+                })
+            );
+
+            setUserPostData(newUserPostData.filter(post => post !== null));
+        }
+    }
+
+    const handleAnswerData = async (answerIdList) => {
+        if (answerIdList.length > 0) {
+            const newAnswerList = await Promise.all(
+                answerIdList.map(async (answerId) => {
+                    const answer = await getAnswer(answerId);
+    
+                    if (answer !== "" && answer.state !== -1) {
+                        return {
+                            "answerId": answer.answerId,
+                            "content": answer.content,
+                            "author": answer.author,
+                            "username": answer.username,
+                            "date": answer.answerDate,
+                            "state": answer.state
+                        };
+                    } else {
+                        return null;
+                    }
+                })
+            );
+    
+            // Filter out null values
+            setAnswerList(newAnswerList.filter(answer => answer !== null));
+        }
+    };
+
+    const handlePostOwner = (username) => {
+        const _username = getLocalUser();
+        
+        if (username === _username) {
+            setPostOwner(true);
+            window.localStorage.setItem("POST_OWNED", JSON.stringify(1));
+        } else {
+            setPostOwner(false);
+            window.localStorage.setItem("POST_OWNED", JSON.stringify(0));
+        }
+    }
+
     useEffect(
         () => {
             if (!loginStatus) {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
-                    if (username != null) {
+                    if (username !== null) {
                         handleFetchUser(username);
                         handleFetchPost(postId);
                     } else {
@@ -190,6 +252,7 @@ export const Post = () => {
 
     useEffect(
         () => {
+
             const handleOutsideClick = (event) => {
                 if (postOptionRef.current && !postOptionRef.current.contains(event.target)) {
                     setPostOptionToggle(false);
@@ -201,24 +264,27 @@ export const Post = () => {
             return () => {
                 document.removeEventListener('mousedown', handleOutsideClick);
             }
+
         }, []
     )
 
     return (
         <>
-            <SideBar userData={loggedUser} />
+            <SideBar userData={loggedUser} postData={userPostData} />
 
-      <div className="flex w-full h-full pl-[25%]">
-        <div className="w-[70%] h-full">
-          <div className="flex w-full gap-[30px] h-[61px] items-center justify-start pl-[20px] border border-border-line bg-light-white">
-            <span
-              className="text-[16px] p-[10px] rounded-[50%] hover:bg-dark-white hover:cursor-pointer"
-              onClick={() => navigate(-1)}
-            >
-              <FaIcons.FaArrowLeft />
-            </span>
-            <span className="text-[20px] font-semibold">Post</span>
-          </div>
+            <div className="flex w-full h-full pl-[25%]">
+                <div className="w-[70%] h-full">
+                    <div className="flex w-full gap-[30px] h-[61px] items-center justify-start pl-[20px] border border-border-line bg-light-white">
+                        <span
+                            className="text-[16px] p-[10px] rounded-[50%] hover:bg-dark-white hover:cursor-pointer"
+                            onClick={() => {
+                                navigate(-1);
+                            }}
+                        >
+                            <FaIcons.FaArrowLeft />
+                        </span>
+                        <span className="text-[20px] font-semibold">Post</span>
+                </div>
 
                     {!postDeleted ? 
                         <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
@@ -229,14 +295,14 @@ export const Post = () => {
                                     <div className="flex items-center justify-between relative w-full h-fit">
                                         <div className="flex gap-[5px]">
                                             <span className="font-semibold text-main-maroon hover:underline hover:cursor-pointer">
-                                                {postAuthor.firstName} {postAuthor.lastName}
+                                                {postData.postAuthor}
                                             </span>
                                             <span className="font-light text-dark-gold hover:cursor-pointer">
-                                                @{postAuthor.username}
+                                                @{postData.postUsername}
                                             </span>
                                         </div>
 
-                                        {postAuthor.username === loggedUser.username &&
+                                        {postData.postUsername === loggedUser.username &&
                                             <div className="w-fit h-fit absolute right-0">
                                                 <span className="flex h-full text-[20px] p-[5px] rounded-[50%] hover:cursor-pointer hover:bg-dark-white z-0"
                                                         onClick={()=>showPostOption()}>
@@ -268,14 +334,14 @@ export const Post = () => {
 
                                     <div className="flex flex-col">
                                         <div className="flex items-end justify-between">
-                                            <span className="font-semibold text-[20px]">{postTitle}</span>
+                                            <span className="font-semibold text-[20px]">{postData.title}</span>
                                         </div>
-                                        <span>{postDescription}</span>
+                                        <span>{postData.description}</span>
                                     </div>
 
                                     <div className="flex gap-[5px] items-center text-gray-500">
                                         <span className="text-[9px]"><FaIcons.FaCircleNotch/></span>
-                                        <span className="text-[15px]">{postCreationDate}</span>
+                                        <span className="text-[15px]">{postData.creationDate}</span>
                                         <span className="text-[9px]"><FaIcons.FaCircleNotch/></span>
                                     </div>
                                 </div>
@@ -310,7 +376,7 @@ export const Post = () => {
                                 </div>
                             </div>
 
-                            {answerToggle && <AnswerInput user={loggedUser}/>}
+                            {answerToggle && <AnswerInput user={loggedUser} postId={postData.postId} />}
 
                             <div className="flex justify-evenly w-full h-[50px] text-[16px] border-t border-border-line">
                                 <div className="flex justify-center w-[50%] h-full hover:bg-dark-white hover:cursor-pointer"
@@ -338,9 +404,9 @@ export const Post = () => {
                                 {commentToggle && <CommentInput user={loggedUser}/>}
 
                                 <ul className="flex flex-col w-full h-fit">
-                                    {showAnswers ? <Answers data={answerData}/>
+                                    {showAnswers ? <Answers data={answerList} postOwner={postOwner} loggedUser={loggedUser} />
                                         : <Comments data={commentData}/>}
-                                </ul>
+                                </ul> 
                             </div>
                         </div>
                     :

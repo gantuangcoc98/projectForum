@@ -1,5 +1,6 @@
 package com.lakisamilo.backend.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lakisamilo.backend.dtos.PostDTO;
 import com.lakisamilo.backend.models.Post;
 import com.lakisamilo.backend.models.User;
 import com.lakisamilo.backend.repositories.PostRepo;
@@ -37,16 +39,38 @@ public class PostService {
         return 0;
     }
 
-    public Post getPost(long postId) {
+    public PostDTO getPost(long postId) {
         Optional<Post> p = postRepo.findById(postId);
 
-        if (p.isPresent()) return p.get();
+        if (p.isPresent()) {
+            Post found = p.get();
+            PostDTO postDto = new PostDTO();
+            postDto.setPostId(found.getPostId());
+            postDto.setTitle(found.getTitle());
+            postDto.setDescription(found.getDescription());
+            postDto.setCreationDate(found.getCreationDate());
+            postDto.setPostAuthor(found.getPostAuthor().getFirstName() + " " + found.getPostAuthor().getLastName());
+            postDto.setPostUsername(found.getPostAuthor().getUsername());
+            postDto.setState(found.getState());
+            postDto.setAnswered(found.getAnswered());
+
+            found.getAnswers().forEach(answer -> postDto.getAnswers().add(answer.getAnswerId()));
+            found.getComments().forEach(comment -> postDto.getComments().add(comment.getCommentId()));
+            found.getTags().forEach(tag -> postDto.getTags().add(tag.getTagId()));
+
+            return postDto;
+        }
 
         return null;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepo.findAll();
+    public List<PostDTO> getAllPosts() {
+        List<Post> postLists = postRepo.findAll();
+        List<PostDTO> postDtos = new ArrayList<PostDTO>();
+
+        postLists.forEach(post -> postDtos.add(getPost(post.getPostId())));
+
+        return postDtos;
     }
 
     public int updatePost(Post p) {
@@ -80,7 +104,6 @@ public class PostService {
             }
 
             update.setState(-1);
-            update.setCreationDate(new Date());
             postRepo.save(update);
 
             return 1;

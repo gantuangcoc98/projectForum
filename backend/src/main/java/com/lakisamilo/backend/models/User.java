@@ -47,6 +47,7 @@ public class User {
     private List<Post> posts;
 
     @OneToMany(mappedBy = "answerAuthor", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("answerAuthor")
     private List<Answer> answers;
 
     @OneToMany(mappedBy = "commentAuthor", cascade = CascadeType.ALL)
@@ -74,5 +75,6 @@ public class User {
 
     public User() {
         this.creationDate = new Date();
+        this.state = 0;
     }
 }

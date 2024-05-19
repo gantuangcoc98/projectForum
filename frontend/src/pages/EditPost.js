@@ -34,7 +34,7 @@ export const EditPost = () => {
     const handleFetchPost = async (postId, username) => {
         const post = await getPost(postId);
         
-        if (post !== "" && post.postAuthor.username === username && post.state !== -1) {
+        if (post !== "" && post.postUsername === username && post.state !== -1) {
             setPostIdLong(post.postId);
             setPostTitle(post.title);
             setPostDescription(post.description);

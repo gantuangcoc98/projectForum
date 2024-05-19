@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Profileheader from "../components/Profileheader";
 import SideNavbar from "../components/SideNavbar";
+import { Header } from "../components/Header";
 
 export const Settings = () => {
   // Hardcoded user data
@@ -11,7 +11,7 @@ export const Settings = () => {
     email: "john.doe@example.com",
     password: "password123",
   };
-
+  const inSettings = true;
   const [firstName, setFirstName] = useState(initialData.firstName);
   const [lastName, setLastName] = useState(initialData.lastName);
   const [username, setUsername] = useState(initialData.username);
@@ -39,9 +39,8 @@ export const Settings = () => {
   return (
     <>
       <div className="flex ">
-        <div className="flex-col w-full ml-64">
-          <Profileheader />
-          {/* <ProfileContent /> */}
+        <div className="flex-col w-full ml-0">
+          <Header inSettings={inSettings} />
           <div className="main-content mt-10 px-4">
             <div className="max-w-xl p-5 bg-white shadow-md rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Settings</h2>
@@ -147,9 +146,6 @@ export const Settings = () => {
               </form>
             </div>
           </div>
-        </div>
-        <div className="fixed top-0 w-64 h-full bg-main-maroon text-white flex flex-col items-center py-4">
-          <SideNavbar />
         </div>
       </div>
     </>

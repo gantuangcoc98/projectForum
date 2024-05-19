@@ -2,13 +2,20 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
-import { loginUser } from "../components/Function";
+import { fetchUser, loginUser } from "../components/Function";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "../redux/userPosts";
 
 export const Login = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [postList, setPostList] = useState([]);
+
+  const posts = useSelector((state) => state.userPosts.posts);
+  const dispatch = useDispatch();
 
   const [userNotFound, setUserNotFound] = useState(false);
   const [usernameEmpty, setUsernameEmpty] = useState(false);
@@ -35,7 +42,7 @@ export const Login = () => {
         case 1:
           console.log("Successfully login!");
           window.localStorage.setItem("LOGGED_USER", JSON.stringify(username));
-          navigate("/home");
+          navigate('/home');
           break;
         case -1:
           setIncorrectCredentials(true);
