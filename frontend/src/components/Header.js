@@ -9,7 +9,7 @@ export const Header = ({pageState}) => {
 
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
 
   const [loginStatus, setLoginStatus] = useState(false);
 
@@ -20,11 +20,11 @@ export const Header = ({pageState}) => {
   const profileOptionsRef = useRef(null);
 
   const handleLogin = () => {
-      navigate("/login");
+    navigate("/login");
   };
 
   const handleRegister = () => {
-  navigate("/register");
+    navigate("/register");
   };
 
   const handleBackButton = () => {
@@ -79,11 +79,16 @@ export const Header = ({pageState}) => {
               onClick={()=>handleBackButton()}>
               <FaIcons.FaArrowLeft />
             </span>
-          }
+          )}
 
-          <img src={logo} alt="logo" className="h-12 w-auto hover:cursor-pointer" onClick={() => (loginStatus) ? navigate('/home') : navigate('/')}/>
+          <img
+            src={logo}
+            alt="logo"
+            className="h-12 w-auto hover:cursor-pointer"
+            onClick={() => (loginStatus ? navigate("/home") : navigate("/"))}
+          />
         </div>
-        {!loginStatus && 
+        {!loginStatus && (
           <div className="flex items-center gap-[10px]">
             <button
               className="px-[18px] py-[5px] text-main-maroon font-semibold rounded-[12px] hover:text-white border border-main-maroon hover:bg-main-maroon"
@@ -98,7 +103,7 @@ export const Header = ({pageState}) => {
               Sign Up
             </button>
           </div>
-        }
+        )}
 
         {pageState === 'profile' &&
           <>
@@ -131,5 +136,5 @@ export const Header = ({pageState}) => {
 
       </div>
     </header>
-  )
-}
+  );
+};
