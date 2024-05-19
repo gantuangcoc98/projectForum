@@ -13,8 +13,6 @@ export const Header = ({pageState}) => {
 
   const [loginStatus, setLoginStatus] = useState(false);
 
-  const [state, setState] = useState(pageState);
-
   const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
 
   const profileOptionsRef = useRef(null);
@@ -26,17 +24,6 @@ export const Header = ({pageState}) => {
   const handleRegister = () => {
     navigate("/register");
   };
-
-  const handleBackButton = () => {
-    switch (state) {
-      case 'profile':
-        navigate(-1);
-        break;
-      default:
-        navigate(-1);
-        break;
-    }
-  }
 
   const logout = () => {
     console.log('Logging out...');
@@ -76,10 +63,10 @@ export const Header = ({pageState}) => {
         <div className="flex gap-[20px] w-fit h-full items-center">
           {loginStatus &&
             <span className="flex items-center text-[20px] p-[10px] rounded-[50%] hover:bg-light-white hover:cursor-pointer h-fit w-fit"
-              onClick={()=>handleBackButton()}>
+              onClick={()=> navigate(-1)}>
               <FaIcons.FaArrowLeft />
             </span>
-          )}
+          }
 
           <img
             src={logo}
