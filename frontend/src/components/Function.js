@@ -9,6 +9,14 @@ const getCurrentDate = () => {
     return `${month} ${day}, ${year}`;
 }
 
+const getLocalUser = () => {
+
+    const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
+
+    return username;
+
+}
+
 const registerUser = async (userData) => {
     try {
         const response = await axios.post("http://localhost:8080/registerUser", userData);
@@ -46,7 +54,6 @@ const fetchUser = async (username) => {
 
 
 // START OF Post Model CRUD
-
 const createPost = async (postData) => {
     try {
         const response = await axios.post("http://localhost:8080/createPost", postData);
@@ -96,12 +103,10 @@ const deletePost = async (postId) => {
         console.error("Error:", error);
     }
 }
-
 // END OF Post Model CRUD
 
 
 // START OF Answer Model CRUD
-
 const createAnswer = async (answerData) => {
     try {
         const response = await axios.post("http://localhost:8080/createAnswer", answerData);
@@ -141,16 +146,41 @@ const deleteAnswer = async (answerId) => {
         console.error("Error:", error);
     }
 }
-
 // END OF Answer Model CRUD
 
-const getLocalUser = () => {
-    const user = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
-    return user;
+// START OF Comment Model CRUD
+const createComment = async (commentData) => {
+    try {
+        const response = await axios.post("http://localhost:8080/createComment", commentData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const getComment = async (commentId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getComment?commentId=${commentId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const deleteComment = async (commentId) => {
+    try {
+        const response = await axios.put(`http://localhost:8080/deleteComment?commentId=${commentId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 export {
     getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,
-    getAnswer, getLocalUser, deleteAnswer, updateAnswer
+    getAnswer, deleteAnswer, updateAnswer, createComment, getComment, deleteComment, getLocalUser
 }

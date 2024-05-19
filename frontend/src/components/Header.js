@@ -78,6 +78,8 @@ export const Header = ({ inProfile, inSettings }) => {
           </div>
         )}
 
+        {inProfile && <>button</>}
+
         {inProfile && (
           <>
             <div className="flex items-center w-full max-w-md mx-auto">
