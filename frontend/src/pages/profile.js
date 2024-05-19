@@ -15,8 +15,8 @@ export const Profile = () => {
   const [profileData, setProfileData] = useState({});
 
   const [loginStatus, setLoginStatus] = useState(false);
-
   const [answerList, setAnswerList] = useState([]);
+  const [activeSection, setActiveSection] = useState("posts"); // State to manage active section
 
   const [loading, setLoading] = useState(true);
 
@@ -29,14 +29,13 @@ export const Profile = () => {
     } else {
       console.log("User not found.");
     }
-  }
+  };
 
   const handleFetchAnswerData = async (idList) => {
     if (idList.length > 0) {
-
       const newAnswerList = await Promise.all(
         idList.map(async (answerId) => {
-              const answer = await getAnswer(answerId);
+          const answer = await getAnswer(answerId);
 
               if (answer !== "" && answer.state !== -1) {
                   return {
@@ -58,7 +57,7 @@ export const Profile = () => {
       setAnswerList(newAnswerList.filter(answer => answer !== null));
 
     }
-  }
+  };
 
   const handleFetchProfile = async (username) => {
     const user = await fetchUser(username);

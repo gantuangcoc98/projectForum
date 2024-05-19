@@ -1,28 +1,26 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaHome, FaInfoCircle, FaQuestionCircle } from "react-icons/fa"; // Importing icons from react-icons
 
-const SideNavbar = () => {
+const SideNavbar = ({ setActiveSection }) => {
   return (
-    <div className="fixed top-0 w-64 h-full bg-main-maroon text-white flex flex-col items-center py-4">
-      <Link
-        to="/post"
-        className="py-2 px-4 flex items-center w-full hover:bg-light-gold"
+    <div className="fixed left-0 top-50 h-2/3 w-64 bg-dark-white text-main-maroon border-r-4 border-main-maroon flex flex-col items-center py-4">
+      <button
+        onClick={() => setActiveSection("posts")}
+        className="py-2 px-4 w-full text-center hover:bg-light-gold mb-4"
       >
-        <FaHome className="mr-2" /> Home
-      </Link>
-      <Link
-        to="/about"
-        className="py-2 px-4 flex items-center w-full hover:bg-light-gold"
+        Posts
+      </button>
+      <button
+        onClick={() => setActiveSection("answers")}
+        className="py-2 px-4 w-full text-center hover:bg-light-gold mb-4"
       >
-        <FaInfoCircle className="mr-2" /> About Us
-      </Link>
-      <Link
-        to="/support"
-        className="py-2 px-4 flex items-center w-full hover:bg-light-gold"
+        Answers
+      </button>
+      <button
+        onClick={() => setActiveSection("tags")}
+        className="py-2 px-4 w-full text-center hover:bg-light-gold"
       >
-        <FaQuestionCircle className="mr-2" /> Support
-      </Link>
+        Tags
+      </button>
     </div>
   );
 };
