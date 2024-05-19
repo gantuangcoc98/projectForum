@@ -44,8 +44,12 @@ public class Answer {
     @Column(name = "state")
     private int state;
 
+    @Column(name = "mark")
+    private int mark;
+
     public Answer() {
         this.date = new Date();
         this.state = 0;
+        this.mark = 0;
     }
 }

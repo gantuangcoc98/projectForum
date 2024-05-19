@@ -1,5 +1,7 @@
 package com.lakisamilo.backend.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,16 @@ public class CommentService {
         }
 
         return null;
+    }
+
+    public List<CommentDTO> getAllComments() {
+        List<CommentDTO> commentDTOs = new ArrayList<CommentDTO>();
+
+        List<Comment> post = commentRepo.findAll();
+
+        post.forEach(comment -> commentDTOs.add(getComment(comment.getCommentId())));
+
+        return commentDTOs;
     }
 
     public int deleteComment(long commentId) {

@@ -1,5 +1,7 @@
 package com.lakisamilo.backend.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,12 @@ public class CommentController {
     @GetMapping(path = "getComment")
     public CommentDTO getComment(@RequestParam("commentId") long commentId) {
         return commentService.getComment(commentId);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "getAllComments")
+    public List<CommentDTO> getAllComments() {
+        return commentService.getAllComments();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")

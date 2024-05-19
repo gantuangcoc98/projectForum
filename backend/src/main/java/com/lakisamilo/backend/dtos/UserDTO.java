@@ -22,11 +22,21 @@ public class UserDTO {
     private List<Long> tags; // No need
     private List<Long> comments; // No need
 
+    private List<Long> upVotedPosts;
+    private List<Long> downVotedPosts;
+
+    private List<Long> followers;
+    private List<Long> following;
+
     public UserDTO() {
         this.posts = new ArrayList<Long>();
         this.answers = new ArrayList<Long>();
         this.tags = new ArrayList<Long>();
         this.comments = new ArrayList<Long>();
+        this.upVotedPosts = new ArrayList<Long>();
+        this.downVotedPosts = new ArrayList<Long>();
+        this.following = new ArrayList<Long>();
+        this.followers = new ArrayList<Long>();
     }
 
 }

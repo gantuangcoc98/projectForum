@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lakisamilo.backend.dtos.FollowUserDTO;
 import com.lakisamilo.backend.dtos.UserDTO;
 import com.lakisamilo.backend.models.User;
 import com.lakisamilo.backend.others.UserCredentials;
@@ -36,6 +37,12 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "getUserByIds")
+    public List<UserDTO> getUserByUserIds(@RequestParam List<Long> userIds) {
+        return userService.getUserByUserIds(userIds);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "getAllUsers")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
@@ -57,6 +64,18 @@ public class UserController {
     @PostMapping(path = "login")
     public int loginUser(@RequestBody UserCredentials u) {
         return userService.loginUser(u.getUsername(), u.getPassword());
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping(path = "followUser")
+    public int followUser(@RequestBody FollowUserDTO fu) {
+        return userService.followUser(fu);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping(path = "unFollowUser")
+    public int unFollowUser(@RequestBody FollowUserDTO fu) {
+        return userService.unFollowUser(fu);
     }
     
 }

@@ -9,7 +9,8 @@ import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
-import { deletePost, fetchUser, getAnswer, getComment, getLocalUser, getPost } from "../components/Function";
+import { deletePost, fetchUser, formatDateTime, getAllPosts, getAnswer, getComment, getLocalUser, getPost, incrementViews, updatePost, votePost } from "../components/Function";
+import { Recommendations } from "../components/Recommendations";
 
 export const Post = () => {
     const navigate = useNavigate();
@@ -19,6 +20,16 @@ export const Post = () => {
     const [userPostData, setUserPostData] = useState([]);
 
     const [postData, setPostData] = useState({});
+
+    const [sortedByCreationDate, setSortedByCreationDate] = useState([]);
+    const [sortedByMostViews, setSortedByMostViews] = useState([]);
+
+    const [upVotes, setUpVotes] = useState(0);
+    const [downVotes, setDownVotes] = useState(0);
+    const [commentCount, setCommentCount] = useState(0);
+
+    const [userUpVoted, setUserUpVoted] = useState(false);
+    const [userDownVoted, setUserDownVoted] = useState(false);
 
     const [postDeleted, setPostDeleted] = useState(false);
 
@@ -36,6 +47,8 @@ export const Post = () => {
 
     const [answerToggle, setAnswerToggle] = useState(false);
     const [commentToggle, setCommentToggle] = useState(false);
+
+    const [viewsIncremented, setViewsIncremented] = useState(false);
 
     const [upVote, setUpVote] = useState("text-black");
     const [downVote, setDownVote] = useState("text-black");
@@ -114,35 +127,6 @@ export const Post = () => {
         }
     }
 
-    const handleFetchUser = async (username) => {
-        const user = await fetchUser(username);
-
-        if (user !== null) {
-            setLoggedUser(user);
-            setLoginStatus(true);
-            handleUserPostData(user.posts);
-        } else {
-            console.log("Failed to fetch user.");
-        }
-    }
-
-    const handleFetchPost = async (postId) => {
-        const post = await getPost(postId);
-
-        if (post !== "") {
-            if (post.state === -1) {
-                setPostDeleted(true);
-            } else {
-                setPostData(post);
-                handleAnswerData(post.answers);
-                handleCommentData(post.comments);
-                handlePostOwner(post.postUsername);
-            }
-        } else {
-            navigate('/home');
-        }
-    }
-
     const showPostOption = () => {
         setPostOptionToggle(true);
     }
@@ -150,7 +134,7 @@ export const Post = () => {
     const editPost = (postId) => {
         navigate(`/post/${postId}/edit`);
     }
-
+    
     const _deletePost = async (postId) => {
         const response = await deletePost(postId);
 
@@ -169,6 +153,69 @@ export const Post = () => {
                 break;
             default:
                 break;
+        }
+    }
+    
+    const viewProfile = (username) => {
+        navigate(`/profile/${username}`);
+    }
+
+    const handleFetchAllPosts = async () => {
+        const allPosts = await getAllPosts();
+
+        const filteredPosts = allPosts.filter(post => post.state !== -1);
+
+        const sortedPosts = filteredPosts.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+        const latestFivePosts = sortedPosts.slice(0, 5);
+        setSortedByCreationDate(latestFivePosts);
+
+        const mostViewsData = filteredPosts.sort((a, b) => {
+            return b.viewCount - a.viewCount
+        });
+        const slicedMostViewsData = mostViewsData.slice(0, 5);
+        setSortedByMostViews(slicedMostViewsData);
+    }
+
+    const handleFetchUser = async (username) => {
+        const user = await fetchUser(username);
+
+        if (user !== null) {
+            setLoggedUser(user);
+            setLoginStatus(true);
+            handleUserPostData(user.posts);
+            handleUserVoteState(user);
+        } else {
+            console.log("Failed to fetch user.");
+        }
+    }
+
+    const handleFetchPost = async (postId) => {
+        const post = await getPost(postId);
+
+        if (post !== "") {
+            if (post.state === -1) {
+                setPostDeleted(true);
+            } else {
+                setPostData(post);
+                handleAnswerData(post.answered, post.answers);
+                handleCommentData(post.comments);
+                handlePostOwner(post.postUsername);
+                setUpVotes(post.upVoters.length);
+                setDownVotes(post.downVoters.length);
+
+                window.localStorage.setItem("VIEWING_POST", JSON.stringify(postId));
+            }
+        } else {
+            window.localStorage.setItem("VIEWING_POST", JSON.stringify(null));
+            navigate('/home');
+        }
+    }
+
+    const handleUserVoteState = (userData) => {
+        if (userData.upVotedPosts.includes(JSON.parse(postId))) {
+            setUserUpVoted(true);
+        } else if (userData.downVotedPosts.includes(JSON.parse(postId))) {
+            setUserDownVoted(true);
         }
     }
 
@@ -194,29 +241,69 @@ export const Post = () => {
         }
     }
 
-    const handleAnswerData = async (answerIdList) => {
+    const handleAnswerData = async (answered, answerIdList) => {
         if (answerIdList.length > 0) {
+
+            let answerExist = false;
+
             const newAnswerList = await Promise.all(
                 answerIdList.map(async (answerId) => {
                     const answer = await getAnswer(answerId);
     
                     if (answer !== "" && answer.state !== -1) {
+
+                        if (answer.mark === 1) answerExist = true;
+
                         return {
                             "answerId": answer.answerId,
                             "content": answer.content,
                             "author": answer.author,
                             "username": answer.username,
                             "date": answer.answerDate,
-                            "state": answer.state
+                            "state": answer.state,
+                            "mark": answer.mark
                         };
+
                     } else {
                         return null;
                     }
                 })
             );
     
-            // Filter out null values
-            setAnswerList(newAnswerList.filter(answer => answer !== null));
+            const filteredNewAnswerList = newAnswerList.filter(answer => answer !== null);
+            const sortedByNewest = filteredNewAnswerList.sort(
+                (a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+
+                    return dateB - dateA;
+                }
+            )
+            setAnswerList(sortedByNewest);
+
+            if (!answerExist && answered !== 0) {
+                const postUpdate = {
+                    "postId": JSON.parse(postId),
+                    "updateState": "unmark"
+                }
+
+                const response = await updatePost(postUpdate);
+
+                switch (response) {
+                    case 0:
+                        console.log("Post not found.");
+                        break;
+                    case 1:
+                        console.log("No marked answer found. Resetting post answered state.");
+                        handleFetchPost(postId);
+                        break;
+                    case -1:
+                        console.log("Post not found.");
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     };
 
@@ -242,7 +329,17 @@ export const Post = () => {
             );
     
             // Filter out null values
-            setCommentList(newCommentList.filter(comment => comment !== null));
+            const filteredCommentList = newCommentList.filter(comment => comment !== null);
+            const sortedByNewestComment = filteredCommentList.sort(
+                (a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+
+                    return dateB - dateA;
+                }
+            );
+            setCommentList(sortedByNewestComment);
+            setCommentCount(sortedByNewestComment.length);
         }
     }
 
@@ -256,11 +353,37 @@ export const Post = () => {
         }
     }
 
-    const viewProfile = (username) => {
-        if (postOwner) {
-            navigate('/profile');
+    const handleVoteClick = async (voteState) => {
+        const voteData = {
+            "voter": loggedUser.username,
+            "postId": JSON.parse(postId),
+            "voteState": voteState
+        }
+
+        const response = await votePost(voteData);
+
+        switch (response) {
+            case 0:
+                console.log("Voter or post not found. Voter or post might be deleted.");
+                window.location.reload();
+                break;
+            case 1:
+                console.log("Successfully " + voteState + "d post.");
+                window.location.reload();
+                break;
+            default:
+                break;
+        }
+    }
+
+    const handleViewCount = async (postId) => {
+        const response = await incrementViews(postId);
+
+        if (response === 1) {
+            console.log("Successfully incremented view count by 1.");
+            setViewsIncremented(true);
         } else {
-            navigate(`/profile/${username}`);
+            console.log("Post not found.");
         }
     }
 
@@ -273,19 +396,21 @@ export const Post = () => {
                     if (username !== null) {
                         handleFetchUser(username);
                         handleFetchPost(postId);
+                        handleFetchAllPosts();
                     } else {
                         navigate('/login');
                     }
                 } catch (error) {
                     console.error("Error:", error)
                 }
+            } else {
+                handleViewCount(postId);
             }
         }, [loginStatus]
     )
 
     useEffect(
         () => {
-
             const handleOutsideClick = (event) => {
                 if (postOptionRef.current && !postOptionRef.current.contains(event.target)) {
                     setPostOptionToggle(false);
@@ -379,8 +504,14 @@ export const Post = () => {
 
                                     <div className="flex gap-[5px] items-center text-gray-500">
                                         <span className="text-[9px]"><FaIcons.FaCircleNotch/></span>
-                                        <span className="text-[15px]">{postData.creationDate}</span>
+                                        <span className="text-[15px]">
+                                            {formatDateTime(postData.creationDate)}
+                                            {postData.state === 1 &&
+                                                <span> (Edited)</span>
+                                            }
+                                        </span>
                                         <span className="text-[9px]"><FaIcons.FaCircleNotch/></span>
+                                        <span className="text-[15px] ml-[5px] font-semibold">{postData.viewCount} views</span>
                                     </div>
                                 </div>
                             </div>
@@ -389,22 +520,36 @@ export const Post = () => {
                                 <div className="flex pt-[5px] pb-[5px] pl-[10px] pr-[10px] items-center justify-between border-t border-b border-border-line"> 
                                     <span className={"flex gap-[5px] items-center p-[5px] rounded-[12px] text-[20px] h-full w-fit hover:cursor-pointer " + upVote}
                                         onMouseEnter={()=>iconMouseEnter('up')}
-                                        onMouseLeave={()=>iconMouseLeave('up')}>
-                                        <span className={upVoteBackground}><BiIcons.BiUpvote/></span>
-                                        <span className="w-fit h-fit text-[16px]">25</span> 
-                                    </span> 
+                                        onMouseLeave={()=>iconMouseLeave('up')}
+                                        onClick={() => handleVoteClick("upVote")}>
+                                        <span className={upVoteBackground}>
+                                            {userUpVoted ? 
+                                                <BiIcons.BiSolidUpvote />
+                                                :
+                                                <BiIcons.BiUpvote/>
+                                            }
+                                        </span>
+                                        <span className="w-fit h-fit text-[16px]">{upVotes}</span>
+                                    </span>
                                     <span className={"flex gap-[5px] items-center p-[5px] rounded-[12px] text-[20px] h-full w-fit hover:cursor-pointer " + downVote}
                                         onMouseEnter={()=>iconMouseEnter('down')}
-                                        onMouseLeave={()=>iconMouseLeave('down')}>
-                                        <span className={downVoteBackground}><BiIcons.BiDownvote/></span>
-                                        <span className="w-fit h-fit text-[16px]">25</span>
+                                        onMouseLeave={()=>iconMouseLeave('down')}
+                                        onClick={() => handleVoteClick("downVote")}>
+                                        <span className={downVoteBackground}>
+                                            {userDownVoted ? 
+                                                <BiIcons.BiSolidDownvote />
+                                                :
+                                                <BiIcons.BiDownvote/>
+                                            }
+                                        </span>
+                                        <span className="w-fit h-fit text-[16px]">{downVotes}</span>
                                     </span>
                                     <span className={"flex gap-[5px] items-center p-[5px] rounded-[12px] text-[20px] h-full w-fit hover:cursor-pointer " + comments}
                                         onMouseEnter={()=>iconMouseEnter('comments')}
                                         onMouseLeave={()=>iconMouseLeave('comments')}
                                         onClick={()=>openComment()}>
                                         <span className={commentsBackground}><BiIcons.BiComment/></span>
-                                        <span className="w-fit h-fit text-[16px]">69</span>
+                                        <span className="w-fit h-fit text-[16px]">{commentCount}</span>
                                     </span>
                                     <span className="flex items-center w-fit h-fit p-[5px] text-[20px] rounded-[12px] bg-light-gold hover:bg-dark-gold hover:cursor-pointer"
                                         onClick={()=>openAnswer()}>
@@ -442,7 +587,7 @@ export const Post = () => {
                                 {commentToggle && <CommentInput user={loggedUser} postId={postId}/>}
 
                                 <ul className="flex flex-col w-full h-fit">
-                                    {showAnswers ? <Answers data={answerList} postOwner={postOwner} loggedUser={loggedUser} />
+                                    {showAnswers ? <Answers data={answerList} postOwner={postOwner} loggedUser={loggedUser} postId={JSON.parse(postId)}/>
                                         : <Comments data={commentList} postOwner={postOwner} loggedUser={loggedUser} />}
                                 </ul> 
                             </div>
@@ -478,6 +623,8 @@ export const Post = () => {
                         </div>
                     }
                 </div>
+ 
+                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser}/>
             </div>
         </>
     )

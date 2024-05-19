@@ -47,6 +47,7 @@ public class AnswerService {
                 a.setState(answer.getState());
                 a.setAnswerDate(answer.getDate());
                 a.setAuthor(answer.getAnswerAuthor().getFirstName() + " " + answer.getAnswerAuthor().getLastName());
+                a.setMark(answer.getMark());
 
                 return a;
             } catch (Exception e) {
@@ -71,6 +72,7 @@ public class AnswerService {
             answerDto.setAuthor(found.getAnswerAuthor().getFirstName() + " " + found.getAnswerAuthor().getLastName());
             answerDto.setState(found.getState());
             answerDto.setAnswerDate(found.getDate());
+            answerDto.setMark(found.getMark());
 
             return answerDto;
         }
@@ -94,15 +96,30 @@ public class AnswerService {
             Answer newAnswer = answer.get();
 
             if (newAnswer.getState() == -1) return -1;
+
             else {
-                newAnswer.setContent(a.getContent());
-                newAnswer.setDate(new Date());
-                newAnswer.setState(1);
+
+                switch (a.getUpdateState()) {
+                    case "edit":
+                        newAnswer.setContent(a.getContent());
+                        newAnswer.setDate(new Date());
+                        newAnswer.setState(1);
+                        break;
+                    case "mark":
+                        newAnswer.setMark(1);
+                        break;
+                    case "unmark":
+                        newAnswer.setMark(0);
+                        break;
+                    default:
+                        break;
+                }
 
                 answerRepo.save(newAnswer);
             
                 return 1;
             }
+
         }
 
         return 0;

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -53,8 +54,35 @@ public class User {
     @OneToMany(mappedBy = "commentAuthor", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_UpVotes",
+        joinColumns = @JoinColumn(name = "userId"),
+        inverseJoinColumns = @JoinColumn(name = "postId")
+    )
+    private List<Post> upVotedPosts;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_DownVotes",
+        joinColumns = @JoinColumn(name = "userId"),
+        inverseJoinColumns = @JoinColumn(name = "postId")
+    )
+    private List<Post> downVotedPosts;
+
     @OneToMany(mappedBy = "tagAuthor", cascade = CascadeType.ALL)
     private List<Tag> tags;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_followers",
+        joinColumns = @JoinColumn(name = "userId"),
+        inverseJoinColumns = @JoinColumn(name = "followerId")
+    )
+    private List<User> followers;
+
+    @ManyToMany(mappedBy = "followers")
+    private List<User> following;
 
     @ManyToMany
     @JoinTable(

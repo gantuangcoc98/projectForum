@@ -65,7 +65,8 @@ export const EditPost = () => {
             const postData = {
                 "postId": postIdLong,
                 "title": postTitle,
-                "description": postDescription
+                "description": postDescription,
+                "updateState": "edit"
             }
     
             const response = await updatePost(postData);

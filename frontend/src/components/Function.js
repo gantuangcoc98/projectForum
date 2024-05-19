@@ -1,13 +1,23 @@
 import axios from 'axios';
 
-const getCurrentDate = () => {
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const date = new Date();
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-    return `${month} ${day}, ${year}`;
-}
+const formatDateTime = (dateTimeString) => {
+    const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
+    const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+
+    const date = new Date(dateTimeString);
+
+    const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+    const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+    return `${formattedDate} ${formattedTime}`;
+};
+
+export const sortPostsByDate = (posts, ascending = true) => {
+    return posts.sort((a, b) => {
+        const dateA = new Date(a.creationDate);
+        const dateB = new Date(b.creationDate);
+        return ascending ? dateA - dateB : dateB - dateA;
+    });
+};
 
 const getLocalUser = () => {
 
@@ -52,6 +62,36 @@ const fetchUser = async (username) => {
     }
 }
 
+export const getUserByIds = async (userIds) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getUserByIds?userIds=${userIds}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export const followUser = async (followData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/followUser", followData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export const unfollowUser = async (followData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/unFollowUser", followData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 
 // START OF Post Model CRUD
 const createPost = async (postData) => {
@@ -84,6 +124,26 @@ const getPost = async (postId) => {
     }
 }
 
+export const getPostByIds = async (postIds) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getPostByIds?postIds=${postIds.join(',')}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const getFollowedPost = async (userIds) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/getFollowedPost?userIds=${userIds.join(',')}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 const getAllPosts = async () => {
     try {
         const response = await axios.get("http://localhost:8080/getAllPosts");
@@ -97,6 +157,26 @@ const getAllPosts = async () => {
 const deletePost = async (postId) => {
     try {
         const response = await axios.put(`http://localhost:8080/deletePost?postId=${postId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const votePost = async (voteData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/votePost", voteData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+const incrementViews = async (postId) => {
+    try {
+        const response = await axios.put(`http://localhost:8080/incrementViews?postId=${postId}`);
 
         return response.data;
     } catch (error) {
@@ -179,8 +259,10 @@ const deleteComment = async (commentId) => {
         console.error("Error:", error);
     }
 }
+// END OF Comment Model CRUD
 
 export {
-    getCurrentDate, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,
-    getAnswer, deleteAnswer, updateAnswer, createComment, getComment, deleteComment, getLocalUser
+    formatDateTime, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,
+    getAnswer, deleteAnswer, updateAnswer, createComment, getComment, deleteComment, getLocalUser, votePost, incrementViews,
+    getFollowedPost
 }

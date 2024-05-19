@@ -3,12 +3,16 @@ import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
-import { deleteComment } from './Function';
+import { deleteComment, formatDateTime } from './Function';
+import { useNavigate } from 'react-router-dom';
 
 export const Comments = ({data, postOwner, loggedUser}) => {
 
     const commentOptionRef = useRef(null);
+
     const [selectedCommentItem, setSelectedCommentItem] = useState(null);
+
+    const navigate = useNavigate();
 
     const showCommentOption = (index) => {
         setSelectedCommentItem(index === selectedCommentItem ? null : index);
@@ -35,6 +39,10 @@ export const Comments = ({data, postOwner, loggedUser}) => {
         }
     }
 
+    const viewPost = (username) => {
+        navigate(`/profile/${username}`);
+    }
+
     useEffect(
         () => {
             const handleOutsideClick = (event) => {
@@ -57,16 +65,19 @@ export const Comments = ({data, postOwner, loggedUser}) => {
                 return (
                     <li key={index} className="flex gap-[10px] p-[10px] border-t border-border-line hover:bg-dark-white">
                         <span className="w-[51px] h-[51px] hover:cursor-pointer hover:opacity-60">
-                            <img src={profile} alt="profile" width='100%' className='rounded-[50%]'/>
+                            <img src={profile} alt="profile" width='100%' className='rounded-[50%]'
+                                onClick={() => { viewPost(item.username) }}/>
                         </span>
                         <div className="w-full h-fit flex flex-col text-[16px]">
                             <div className="flex items-center justify-between relative">
                                 <div className="flex gap-[5px]">
-                                    <span className="text-main-maroon font-semibold hover:underline hover:cursor-pointer">
+                                    <span className="text-main-maroon font-semibold hover:underline hover:cursor-pointer"
+                                        onClick={() => { viewPost(item.username) }}>
                                         {item.author}
                                     </span>
-                                    <span className="text-dark-gold hover:cursor-pointer">
-                                        {'@' + item.author}
+                                    <span className="text-dark-gold hover:cursor-pointer"
+                                        onClick={() => { viewPost(item.username) }}>
+                                        {'@' + item.username}
                                     </span>
                                 </div>
 
@@ -79,7 +90,7 @@ export const Comments = ({data, postOwner, loggedUser}) => {
 
                                         {selectedCommentItem === index &&
                                             <div key={index} ref={commentOptionRef} className="flex flex-col h-fit w-[175px] absolute top-0 left-0 rounded-[12px] border border-border-line bg-lighter-white z-10">
-                                                <div className="flex items-center gap-[5px] p-[10px] rounded-[12px]  hover:cursor-pointer hover:bg-red-300"
+                                                <div className="flex items-center gap-[5px] p-[10px] rounded-[12px]  hover:cursor-pointer hover:bg-light-white"
                                                     onClick={() => { _deleteComment(item.commentId) }}>
                                                     <span className="text-[20px]"><MdIcons.MdDeleteForever/></span>
                                                     <span className="font-semibold">Delete comment</span>
@@ -95,7 +106,7 @@ export const Comments = ({data, postOwner, loggedUser}) => {
                             </div>
                             <div className="flex gap-[5px] items-center text-gray-500">
                                 <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
-                                <span className="text-[14px]">{item.date}</span>
+                                <span className="text-[14px]">{formatDateTime(item.date)}</span>
                                 <span className="text-[8px]"><FaIcons.FaCircleNotch/></span>
                             </div>
                         </div>

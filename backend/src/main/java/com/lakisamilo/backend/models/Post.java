@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -51,6 +52,12 @@ public class Post {
     @Column(name = "answered")
     private int answered;
 
+    @ManyToMany(mappedBy = "upVotedPosts")
+    private List<User> upVoters;
+
+    @ManyToMany(mappedBy = "downVotedPosts")
+    private List<User> downVoters;
+
     @OneToMany(mappedBy = "answerPost", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("answerPost")
     private List<Answer> answers;
@@ -58,9 +65,13 @@ public class Post {
     @OneToMany(mappedBy = "postTag", cascade = CascadeType.ALL)
     private List<Tag> tags;
 
+    @Column(name = "viewCount")
+    private long viewCount;
+
     public Post() {
         this.creationDate = new Date();
         this.state = 0;
         this.answered = 0;
+        this.viewCount = 0;
     }
 }

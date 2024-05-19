@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lakisamilo.backend.dtos.FollowUserDTO;
 import com.lakisamilo.backend.dtos.UserDTO;
 import com.lakisamilo.backend.models.User;
 import com.lakisamilo.backend.repositories.UserRepo;
@@ -61,11 +62,25 @@ public class UserService {
             found.getPosts().forEach(post -> userDto.getPosts().add(post.getPostId()));
             found.getAnswers().forEach(answer -> userDto.getAnswers().add(answer.getAnswerId()));
             found.getTags().forEach(tag -> userDto.getTags().add(tag.getTagId()));
+            found.getUpVotedPosts().forEach(post -> userDto.getUpVotedPosts().add(post.getPostId()));
+            found.getDownVotedPosts().forEach(post -> userDto.getDownVotedPosts().add(post.getPostId()));
+            found.getFollowers().forEach(follower -> userDto.getFollowers().add(follower.getUserId()));
+            found.getFollowing().forEach(follower -> userDto.getFollowing().add(follower.getUserId()));
 
             return userDto;
         }
 
         return null;
+    }
+
+    public List<UserDTO> getUserByUserIds(List<Long> userIds) {
+        List<User> userList = userRepo.findByUserIdIn(userIds);
+
+        List<UserDTO> userDtos = new ArrayList<UserDTO>();
+
+        userList.forEach(user -> userDtos.add(getUser(user.getUsername())));
+
+        return userDtos;
     }
 
     public List<UserDTO> getAllUsers() {
@@ -114,6 +129,55 @@ public class UserService {
             userRepo.save(found);
 
             return 1;
+        }
+
+        return 0;
+    }
+
+    public int followUser(FollowUserDTO fu) {
+        Optional<User> user = userRepo.findByUsername(fu.getUsername());
+        Optional<User> target = userRepo.findByUsername(fu.getTargetUsername());
+
+        if (user.isPresent() && user.get().getState() != -1 && target.isPresent() && target.get().getState() != -1) {
+            User follower = user.get();
+            User following = target.get();
+
+            if (follower.getFollowing().contains(following) || following.getFollowers().contains(follower)) {
+                return -1;
+            } else {
+                follower.getFollowing().add(following);
+                following.getFollowers().add(follower);
+
+                userRepo.save(follower);
+                userRepo.save(following);
+                return 1;
+            }
+
+        }
+
+        return 0;
+    }
+
+    public int unFollowUser(FollowUserDTO fu) {
+        Optional<User> user = userRepo.findByUsername(fu.getUsername());
+        Optional<User> target = userRepo.findByUsername(fu.getTargetUsername());
+
+        if (user.isPresent() && user.get().getState() != -1 && target.isPresent() && target.get().getState() != -1) {
+            User follower = user.get();
+            User following = target.get();
+
+            if (follower.getFollowing().contains(following) || following.getFollowers().contains(follower)) {
+                follower.getFollowing().remove(following);
+                following.getFollowers().remove(follower);
+
+                userRepo.save(follower);
+                userRepo.save(following);
+
+                return 1;
+            } else {
+                return -1;
+            }
+
         }
 
         return 0;

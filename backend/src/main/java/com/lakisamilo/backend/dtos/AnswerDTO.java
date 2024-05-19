@@ -18,5 +18,7 @@ public class AnswerDTO {
     private String author;
     private int state;
     private Date answerDate;
+    private int mark;
+    private String updateState;
 
 }

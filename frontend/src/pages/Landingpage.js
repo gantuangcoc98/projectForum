@@ -16,7 +16,7 @@ export const Landingpage = () => {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       {/* Header section */}
-      <Header />
+      <Header pageState={'landingPage'} />
 
       {/* Main content */}
       <div className="flex flex-col items-center justify-center">

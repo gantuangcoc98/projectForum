@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lakisamilo.backend.dtos.PostDTO;
+import com.lakisamilo.backend.dtos.VoteDTO;
 import com.lakisamilo.backend.models.Post;
 import com.lakisamilo.backend.services.PostService;
 
@@ -34,6 +35,18 @@ public class PostController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "getFollowedPost")
+    public List<PostDTO> getFollowedPost(@RequestParam List<Long> userIds) {
+        return postService.getFollowedPost(userIds);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "getPostByIds")
+    public List<PostDTO> getPostByIds(@RequestParam List<Long> postIds) {
+        return postService.getPostByIds(postIds);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "getAllPosts")
     public List<PostDTO> getAllPosts() {
         return postService.getAllPosts();
@@ -41,7 +54,7 @@ public class PostController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(path = "updatePost")
-    public int updatePost(@RequestBody Post p) {
+    public int updatePost(@RequestBody PostDTO p) {
         return postService.updatePost(p);
     }
 
@@ -51,4 +64,15 @@ public class PostController {
         return postService.deletePost(postId);
     }
     
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping(path = "votePost")
+    public int votePost(@RequestBody VoteDTO v) {
+        return postService.votePost(v);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PutMapping(path = "incrementViews")
+    public int incrementViewCount(@RequestParam("postId") long postId) {
+        return postService.incrementViewCount(postId);
+    }
 }
