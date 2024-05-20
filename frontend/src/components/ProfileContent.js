@@ -103,7 +103,7 @@ export const ProfileContent = ({profileData, answerList}) => {
     if (postIds.length > 0) {
       const postList = await getPostByIds(postIds);
 
-      setPostData(postList.filter(post => post !== null));
+      setPostData(postList.filter(post => post !== null && post.state !== -1));
     }
   }
 

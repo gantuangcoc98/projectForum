@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import SideNavbar from "../components/SideNavbar";
 import { Header } from "../components/Header";
 
 export const Settings = () => {

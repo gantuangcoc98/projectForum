@@ -2,7 +2,7 @@ import logo from "../images/logo-transparent-cropped.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
-import { createUser, registerUser } from "../components/Function";
+import { registerUser } from "../components/Function";
 
 export const Register = () => {
   const [firstname, setFirstName] = useState("");

@@ -16,7 +16,6 @@ export const Profile = () => {
 
   const [loginStatus, setLoginStatus] = useState(false);
   const [answerList, setAnswerList] = useState([]);
-  const [activeSection, setActiveSection] = useState("posts"); // State to manage active section
 
   const [loading, setLoading] = useState(true);
 

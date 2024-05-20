@@ -5,9 +5,45 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { useEffect, useRef, useState } from "react";
-import { fetchUser, getAllPosts, getFollowedPost, getPost, sortPostsByDate } from "../components/Function";
+import { fetchAnswerCount, fetchUser, getAllPosts, getAnswer, getFollowedPost, getPost, sortPostsByDate } from "../components/Function";
 import { Recommendations } from "../components/Recommendations";
-import * as FaIcons from "react-icons/fa";
+
+const AnswerItem = ({answerList}) => {
+    const [answerCount, setAnswerCount] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    const fetchAnswerCount = (answerList) => {
+        if (answerList.length > 0) {
+            answerList.forEach(async answerId => {
+                let counter = 0;
+                const answer = await getAnswer(answerId);
+
+                if (answer !== "" && answer.state !== -1) {
+                    counter += 1;
+                    setAnswerCount(counter);
+                }
+            })
+        }
+    }
+
+    useEffect(
+        () => {
+            setLoading(true);
+            fetchAnswerCount(answerList);
+            setLoading(false);
+        }, [answerList]
+    )
+
+    return (
+        <>
+            {loading ?
+                <>Loading answers...</>
+                :
+                <>{answerCount} answers</>
+            }
+        </>
+    )
+}
 
 export const Home = () => {
 
@@ -33,6 +69,8 @@ export const Home = () => {
     const [dateCreatedFilter, setDateCreatedFilter] = useState(false);
 
     const [fypToggle, setFypToggle] = useState(true);
+
+    const [answerCount, setAnswerCount] = useState(0);
 
     const navigate = useNavigate();
 
@@ -351,7 +389,7 @@ export const Home = () => {
                                                     {item.answered !== 0 ?
                                                         <span className="text-[12px] text-green-500 font-semibold">{item.answers.length} answers</span>
                                                         :
-                                                        <span className="text-[12px]">{item.answers.length} answers</span>
+                                                        <span className="text-[12px]"><AnswerItem answerList={item.answers}/></span>
                                                     }
                                                     <span className="text-[12px]">{item.upVoters.length - item.downVoters.length} votes</span>
                                                 </div>
