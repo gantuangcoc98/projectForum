@@ -212,9 +212,9 @@ export const Post = () => {
     }
 
     const handleUserVoteState = (userData) => {
-        if (userData.upVotedPosts.includes(JSON.parse(postId))) {
+        if (userData.upVotedPosts.includes(JSON.parse(postId)) && !userUpVoted) {
             setUserUpVoted(true);
-        } else if (userData.downVotedPosts.includes(JSON.parse(postId))) {
+        } else if (userData.downVotedPosts.includes(JSON.parse(postId)) && !userDownVoted) {
             setUserDownVoted(true);
         }
     }
@@ -374,6 +374,8 @@ export const Post = () => {
             default:
                 break;
         }
+
+
     }
 
     const handleViewCount = async (postId) => {
