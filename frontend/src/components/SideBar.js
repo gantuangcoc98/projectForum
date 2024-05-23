@@ -90,13 +90,13 @@ export default function SideBar({ userData, postData }) {
                         </span>
                     </div>
 
-                    <ul className='flex flex-col w-full h-full gap-[5px] mt-[5px] overflow-y-scroll'>
+                    <ul className='flex flex-col w-full h-full gap-[5px] mt-[5px]'>
                         {postList.map(
                             (item, index) => {
                                 return (
                                     <li key={index}>
                                         <div className="flex w-full h-fit relative">
-                                            <span className="text-[16px] w-full hover:underline hover:cursor-pointer z-10"
+                                            <span className="text-[16px] w-full hover:underline hover:cursor-pointer z-10 "
                                                 onClick={() => viewPost(item.postId)}>{item.title}</span>
                                             <span className="text-[14px] absolute right-0 z-0">{formatDate(item.date)}</span>
                                         </div>
