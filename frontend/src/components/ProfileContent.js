@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import logo from '../images/logo.png';
 import { useEffect, useState } from "react";
-import { fetchUser, followUser, getPostByIds, getUserByIds, unfollowUser } from "./Function";
+import { createNotif, fetchUser, fetchUserById, followUser, getPostByIds, getUserByIds, unfollowUser } from "./Function";
 
 
 export const ProfileContent = ({profileData, answerList}) => {
@@ -142,6 +142,7 @@ export const ProfileContent = ({profileData, answerList}) => {
         break;
       case 1:
         console.log("Successfully followed user.");
+        notifyFollowedUser();
         break;
       case -1:
         console.log("User is already followed.");
@@ -177,6 +178,22 @@ export const ProfileContent = ({profileData, answerList}) => {
     }
     
     window.location.reload();
+  }
+
+  const notifyFollowedUser = async () => {
+    const notifData = {
+      "notificationType": "follow",
+      "toUser": profileData.username,
+      "fromUser": loggedUser.userId
+    }
+
+    const notification = await createNotif(notifData);
+
+    if (notification !== "" && notification.state !== -1) {
+      console.log("Successfully notified followed user.");
+    } else {
+      console.log("Failed to notify followed user.");
+    }
   }
 
   useEffect(

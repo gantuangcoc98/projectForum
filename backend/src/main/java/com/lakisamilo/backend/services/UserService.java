@@ -73,6 +73,18 @@ public class UserService {
         return null;
     }
 
+    public UserDTO getUserById(long userId) {
+        Optional<User> userOptional = userRepo.findById(userId);
+
+        if (userOptional.isPresent() && userOptional.get().getState() != -1) {
+            User user = userOptional.get();
+
+            return getUser(user.getUsername());
+        }
+
+        return null;
+    }
+
     public List<UserDTO> getUserByUserIds(List<Long> userIds) {
         List<User> userList = userRepo.findByUserIdIn(userIds);
 

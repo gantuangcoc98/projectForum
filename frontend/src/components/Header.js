@@ -4,6 +4,8 @@ import avatar from "../images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as HiIcons from "react-icons/hi2";
+import * as IoMdIcons from "react-icons/io";
+import { fetchUser, fetchUserById, formatDateTime, getNotificationsOf } from "./Function";
 
 export const Header = ({pageState}) => {
 
@@ -15,7 +17,12 @@ export const Header = ({pageState}) => {
 
   const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
 
+  const [notificationsToggle, setNotificationsToggle] = useState(false);
+
+  const [notificationData, setNotificationData] = useState([]);
+
   const profileOptionsRef = useRef(null);
+  const notificationsRef = useRef(null);
 
   const handleLogin = () => {
     navigate("/login");
@@ -31,6 +38,34 @@ export const Header = ({pageState}) => {
     navigate("/login");
   }
 
+  const fetchUserData = async (username) => {
+    const user = await fetchUser(username);
+
+    if (user !== "" && user.state !== -1) {
+      fetchUserNotifications(user.userId);
+    }
+  }
+
+  const fetchUserNotifications = async (userId) => {
+    const notificationList = await getNotificationsOf(userId);
+
+    if (notificationList.length > 0) {
+      setNotificationData(notificationList);
+    }
+  }
+
+  const viewPost = (postId) => {
+    navigate(`/post/${postId}`);
+  }
+
+  const viewProfile = async (userId) => {
+    const user = await fetchUserById(userId);
+
+    if (user !== "" && user.state !== -1) {
+      navigate(`/profile/${user.username}`);
+    }
+  }
+
   useEffect(
     () => {
       const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
@@ -38,11 +73,14 @@ export const Header = ({pageState}) => {
       if (username !== null) {
         setUsername(username);
         setLoginStatus(true);
+        fetchUserData(username);
 
         const handleOutsideClick = (event) => {
           if (profileOptionsRef.current && !profileOptionsRef.current.contains(event.target)) {
             setProfileOptionsToggle(false);
           }
+
+          if (notificationsRef.current && !notificationsRef.current.contains(event.target)) setNotificationsToggle(false);
         }
 
         document.addEventListener('mousedown', handleOutsideClick);
@@ -94,29 +132,69 @@ export const Header = ({pageState}) => {
 
         {pageState === 'profile' &&
           <>
-            <div className="flex w-fit h-fit">
-              <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"
-                onClick={ () => {setProfileOptionsToggle(!profileOptionsToggle)}}>
-                <img src={avatar} alt={username + 's avatar'} width="50px" height="auto" className="rounded-full" />
-              </span>
+            <div className="flex w-fit h-fit items-center gap-[20px]">
 
-              {profileOptionsToggle &&
-                <div className="flex flex-col w-fit h-fit absolute top-full right-0 rounded-[12px] bg-lighter-white border border-border-line" ref={profileOptionsRef}>
-                  <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
-                    onClick={() => {
-                      navigate('/home');
-                      window.location.reload();
-                    }}>
-                    <span><HiIcons.HiHome /></span>
-                    Home
-                  </span>
-                  <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
-                    onClick={() => {logout()}}>
-                    <span><FaIcons.FaDoorOpen /></span>
-                    Logout
-                  </span>
-                </div>
-              }
+              <div className="flex w-fit h-fit relative">
+                <span className="text-[25px] hover:cursor-pointer hover:bg-dark-white rounded-full p-[5px]"
+                  onClick={() => setNotificationsToggle(!notificationsToggle)}>
+                  {notificationsToggle ? 
+                    <IoMdIcons.IoMdNotifications />
+                    :
+                    <IoMdIcons.IoMdNotificationsOutline />
+                  }
+                </span>
+
+                {notificationsToggle &&
+                    <div className="flex w-fit h-fit rounded-[12px] border border-border-line bg-lighter-white absolute top-full right-0" ref={notificationsRef}>
+                      <ul className="flex flex-col h-[200px] w-[250px] overflow-y-auto">
+                        {notificationData.map(
+                          (item, index) => {
+                            return (
+                              <li key={index} className="flex gap-[10px] items-center p-[10px] w-full h-fit hover:cursor-pointer hover:bg-light-white rounded-[12px]"
+                                onClick={() => {
+                                  if (item.notificationType === "follow") {
+                                    viewProfile(item.fromUser);
+                                  } else {
+                                    viewPost(item.postId);
+                                  }
+                                  }}>
+                                <div className="flex flex-col gap-[10px]">
+                                  <span className="text-[14px] font-semibold">{item.content}</span>
+                                  <span className="text-[12px]">{formatDateTime(item.date)}</span>
+                                </div>
+                              </li>
+                            )
+                          }
+                        )}
+                      </ul>
+                    </div>
+                }
+              </div>
+
+              <div className="flex w-fit h-fit relative">
+                <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"
+                  onClick={ () => setProfileOptionsToggle(!profileOptionsToggle)}>
+                  <img src={avatar} alt={username + 's avatar'} width="50px" height="auto" className="rounded-full" />
+                </span>
+
+                {profileOptionsToggle &&
+                  <div className="flex flex-col w-fit h-fit absolute top-full right-0 rounded-[12px] bg-lighter-white border border-border-line" ref={profileOptionsRef}>
+                    <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
+                      onClick={() => {
+                        navigate('/home');
+                        window.location.reload();
+                      }}>
+                      <span><HiIcons.HiHome /></span>
+                      Home
+                    </span>
+                    <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
+                      onClick={() => {logout()}}>
+                      <span><FaIcons.FaDoorOpen /></span>
+                      Logout
+                    </span>
+                  </div>
+                }
+              </div>
             </div>
           </>
         }

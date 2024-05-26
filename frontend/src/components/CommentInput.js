@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import profile from '../images/logo.png';
-import { createComment } from './Function';
+import { createComment, createNotif, getPost } from './Function';
 import { useNavigate } from 'react-router-dom';
 
 export const CommentInput = ({user, postId}) => {
@@ -12,6 +12,48 @@ export const CommentInput = ({user, postId}) => {
     const textareaRef = useRef(null);
 
     const navigate = useNavigate();
+
+    const processComment = async () => {
+
+        const commentData = {
+            "content": comment,
+            "username": loggedUser.username,
+            "postId": postId
+        }
+
+        const _comment = await createComment(commentData);
+
+        if (_comment !== "") {
+            console.log("Successfully created comment.");
+            notifyUser();
+            window.location.reload();
+        } else {
+            console.log("Failed to create comment.");
+            window.location.reload();
+        }
+        
+    }
+
+    const notifyUser = async () => {
+        const post = await getPost(postId);
+
+        if (post !== "" && post.state !== -1 && post.postUsername !== user.username) {
+            const notifData = {
+                "notificationType": "comment",
+                "postId": postId,
+                "toUser": post.postUsername,
+                "fromUser": user.userId
+            }
+
+            const notification = await createNotif(notifData);
+
+            if (notification !== "" && notification.state !== -1) {
+                console.log("Successfully notified post author about the comment.");
+            } else {
+                console.log("Failed to notify post author about the comment.");
+            }
+        }
+    }
 
     useEffect(
         () => {
@@ -31,26 +73,6 @@ export const CommentInput = ({user, postId}) => {
             };
         }, []
     )
-
-    const processComment = async () => {
-
-        const commentData = {
-            "content": comment,
-            "username": loggedUser.username,
-            "postId": postId
-        }
-
-        const _comment = await createComment(commentData);
-
-        if (_comment !== "") {
-            console.log("Successfully created comment.");
-            window.location.reload();
-        } else {
-            console.log("Failed to create comment.");
-            window.location.reload();
-        }
-        
-    }
 
     return (
         <div className="flex h-fit w-full gap-[10px] border-t border-border-line p-[10px]"

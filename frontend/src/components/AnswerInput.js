@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createAnswer } from "./Function";
+import { createAnswer, createNotif, getPost } from "./Function";
 import profile from '../images/logo.png'; 
 import { useNavigate } from "react-router-dom";
 
@@ -23,9 +23,32 @@ export const AnswerInput = ({user, postId}) => {
 
         if (_answer !== "") {
             console.log("Successfully submitted answer.");
+            notifyUser();
             window.location.reload();
         } else {
             console.log("Failed to submit answer.");
+        }
+    }
+
+
+    const notifyUser = async () => {
+        const post = await getPost(postId);
+
+        if (post !== "" && post.state !== -1 && post.postUsername !== user.username) {
+            const notifData = {
+                "notificationType": "answer",
+                "postId": postId,
+                "toUser": post.postUsername,
+                "fromUser": user.userId
+            }
+
+            const notification = await createNotif(notifData);
+
+            if (notification !== "" && notification.state !== -1) {
+                console.log("Successfully notified post author.");
+            } else {
+                console.log("Failed to notify post author.");
+            }
         }
     }
 
