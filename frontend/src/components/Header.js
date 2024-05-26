@@ -4,8 +4,8 @@ import avatar from "../images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as HiIcons from "react-icons/hi2";
-import * as IoMdIcons from "react-icons/io";
-import { fetchUser, fetchUserById, formatDateTime, getNotificationsOf } from "./Function";
+import { fetchUser, getNotificationsOf } from "./Function";
+import { Notifications } from "./Notifications";
 
 export const Header = ({pageState}) => {
 
@@ -17,12 +17,9 @@ export const Header = ({pageState}) => {
 
   const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
 
-  const [notificationsToggle, setNotificationsToggle] = useState(false);
-
   const [notificationData, setNotificationData] = useState([]);
 
   const profileOptionsRef = useRef(null);
-  const notificationsRef = useRef(null);
 
   const handleLogin = () => {
     navigate("/login");
@@ -50,19 +47,9 @@ export const Header = ({pageState}) => {
     const notificationList = await getNotificationsOf(userId);
 
     if (notificationList.length > 0) {
-      setNotificationData(notificationList);
-    }
-  }
-
-  const viewPost = (postId) => {
-    navigate(`/post/${postId}`);
-  }
-
-  const viewProfile = async (userId) => {
-    const user = await fetchUserById(userId);
-
-    if (user !== "" && user.state !== -1) {
-      navigate(`/profile/${user.username}`);
+        const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const slicedSortedNotif = sortedNotif.slice(0, 5);
+        setNotificationData(slicedSortedNotif);
     }
   }
 
@@ -79,8 +66,6 @@ export const Header = ({pageState}) => {
           if (profileOptionsRef.current && !profileOptionsRef.current.contains(event.target)) {
             setProfileOptionsToggle(false);
           }
-
-          if (notificationsRef.current && !notificationsRef.current.contains(event.target)) setNotificationsToggle(false);
         }
 
         document.addEventListener('mousedown', handleOutsideClick);
@@ -130,46 +115,11 @@ export const Header = ({pageState}) => {
           </div>
         )}
 
-        {pageState === 'profile' &&
+        {(pageState === 'profile' || pageState === 'post') &&
           <>
             <div className="flex w-fit h-fit items-center gap-[20px]">
 
-              <div className="flex w-fit h-fit relative">
-                <span className="text-[25px] hover:cursor-pointer hover:bg-dark-white rounded-full p-[5px]"
-                  onClick={() => setNotificationsToggle(!notificationsToggle)}>
-                  {notificationsToggle ? 
-                    <IoMdIcons.IoMdNotifications />
-                    :
-                    <IoMdIcons.IoMdNotificationsOutline />
-                  }
-                </span>
-
-                {notificationsToggle &&
-                    <div className="flex w-fit h-fit rounded-[12px] border border-border-line bg-lighter-white absolute top-full right-0" ref={notificationsRef}>
-                      <ul className="flex flex-col h-[200px] w-[250px] overflow-y-auto">
-                        {notificationData.map(
-                          (item, index) => {
-                            return (
-                              <li key={index} className="flex gap-[10px] items-center p-[10px] w-full h-fit hover:cursor-pointer hover:bg-light-white rounded-[12px]"
-                                onClick={() => {
-                                  if (item.notificationType === "follow") {
-                                    viewProfile(item.fromUser);
-                                  } else {
-                                    viewPost(item.postId);
-                                  }
-                                  }}>
-                                <div className="flex flex-col gap-[10px]">
-                                  <span className="text-[14px] font-semibold">{item.content}</span>
-                                  <span className="text-[12px]">{formatDateTime(item.date)}</span>
-                                </div>
-                              </li>
-                            )
-                          }
-                        )}
-                      </ul>
-                    </div>
-                }
-              </div>
+              <Notifications notificationData={notificationData}/>
 
               <div className="flex w-fit h-fit relative">
                 <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"

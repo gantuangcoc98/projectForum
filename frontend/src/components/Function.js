@@ -82,6 +82,16 @@ export const getUserByIds = async (userIds) => {
     }
 }
 
+export const updateUser = async (userData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/updateUser", userData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 export const followUser = async (followData) => {
     try {
         const response = await axios.put("http://localhost:8080/followUser", followData);

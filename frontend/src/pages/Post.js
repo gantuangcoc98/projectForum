@@ -9,7 +9,7 @@ import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
-import { deletePost, fetchUser, formatDateTime, getAllPosts, getAnswer, getComment, getLocalUser, getPost, incrementViews, updatePost, votePost } from "../components/Function";
+import { createNotif, deletePost, fetchUser, formatDateTime, getAllPosts, getAnswer, getComment, getLocalUser, getNotificationsOf, getPost, incrementViews, updatePost, votePost } from "../components/Function";
 import { Recommendations } from "../components/Recommendations";
 
 export const Post = () => {
@@ -48,8 +48,6 @@ export const Post = () => {
     const [answerToggle, setAnswerToggle] = useState(false);
     const [commentToggle, setCommentToggle] = useState(false);
 
-    const [viewsIncremented, setViewsIncremented] = useState(false);
-
     const [upVote, setUpVote] = useState("text-black");
     const [downVote, setDownVote] = useState("text-black");
     const [comments, setComments] = useState("text-black");
@@ -58,6 +56,8 @@ export const Post = () => {
     const [commentsBackground, setCommentsBackground] = useState("bg-transparent");
 
     const [showAnswers, setShowAnswers] = useState(true);
+
+    const [notificationData, setNotificationData] = useState([]);
 
     const commentRef = useRef(null);
 
@@ -184,8 +184,19 @@ export const Post = () => {
             setLoginStatus(true);
             handleUserPostData(user.posts);
             handleUserVoteState(user);
+            fetchUserNotifications(user.userId);
         } else {
             console.log("Failed to fetch user.");
+        }
+    }
+
+    const fetchUserNotifications = async (userId) => {
+        const notificationList = await getNotificationsOf(userId);
+
+        if (notificationList.length > 0) {
+            const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const slicedSortedNotif = sortedNotif.slice(0, 5);
+            setNotificationData(slicedSortedNotif);
         }
     }
 
@@ -369,12 +380,12 @@ export const Post = () => {
                 break;
             case 1:
                 console.log("Successfully " + voteState + "d post.");
+                notifyUserAboutVote(voteState);
                 window.location.reload();
                 break;
             default:
                 break;
         }
-
 
     }
 
@@ -383,9 +394,33 @@ export const Post = () => {
 
         if (response === 1) {
             console.log("Successfully incremented view count by 1.");
-            setViewsIncremented(true);
         } else {
             console.log("Post not found.");
+        }
+    }
+
+    const notifyUserAboutVote = async (voteState) => {
+        const post = await getPost(postId);
+
+        if (post !== "" && post.state !== -1 && post.postUsername !== loggedUser.username) {
+            if ((post.upVoters.includes(loggedUser.userId) && voteState === "upVote") || (post.downVoters.includes(loggedUser.userId) && voteState === "downVote")) {
+                const notifData = {
+                    "notificationType": voteState,
+                    "postId": JSON.parse(postId),
+                    "toUser": post.postUsername,
+                    "fromUser": loggedUser.userId
+                }
+    
+                const notification = await createNotif(notifData);
+    
+                if (notification !== "" && notification.state !== -1) {
+                    console.log("Successfully notified user about the " + voteState + ".");
+                } else {
+                    console.log("Failed to notify user about the " + voteState + ".");
+                }
+            } else {
+                console.log("Already " + voteState + "d the post.");
+            }
         }
     }
 
@@ -626,7 +661,7 @@ export const Post = () => {
                     }
                 </div>
  
-                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser}/>
+                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser} notificationData={notificationData}/>
             </div>
         </>
     )

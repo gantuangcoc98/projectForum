@@ -42,10 +42,10 @@ public class NotificationService {
                 case "comment":
                     notif.setContent(sender + " has commented on your post.");
                     break;
-                case "upvote":
+                case "upVote":
                     notif.setContent(sender + " has upvoted your post.");
                     break;
-                case "downvote":
+                case "downVote":
                     notif.setContent(sender + " has downvoted your post.");
                     break;
                 case "markedAnswer":
