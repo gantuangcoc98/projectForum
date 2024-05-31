@@ -62,9 +62,29 @@ const fetchUser = async (username) => {
     }
 }
 
+export const fetchUserById = async (userId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/user?userId=${userId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 export const getUserByIds = async (userIds) => {
     try {
         const response = await axios.get(`http://localhost:8080/getUserByIds?userIds=${userIds}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export const updateUser = async (userData) => {
+    try {
+        const response = await axios.put("http://localhost:8080/updateUser", userData);
 
         return response.data;
     } catch (error) {
@@ -260,6 +280,28 @@ const deleteComment = async (commentId) => {
     }
 }
 // END OF Comment Model CRUD
+
+// START OF Notification Model CRUD
+export const createNotif = async (notifData) => {
+    try {
+        const response = await axios.post(`http://localhost:8080/notification`, notifData);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+export const getNotificationsOf = async (userId) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/notification?userId=${userId}`);
+
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+// END OF Notification Model CRUD
 
 export {
     formatDateTime, registerUser, loginUser, fetchUser, createPost, getPost, getAllPosts, deletePost, updatePost, createAnswer,

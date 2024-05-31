@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { useEffect, useRef, useState } from "react";
-import { fetchAnswerCount, fetchUser, getAllPosts, getAnswer, getFollowedPost, getPost, sortPostsByDate } from "../components/Function";
+import { fetchUser, getAllPosts, getAnswer, getFollowedPost, getNotificationsOf, getPost, sortPostsByDate } from "../components/Function";
 import { Recommendations } from "../components/Recommendations";
 
 const AnswerItem = ({answerList}) => {
@@ -14,21 +14,21 @@ const AnswerItem = ({answerList}) => {
 
     const fetchAnswerCount = (answerList) => {
         if (answerList.length > 0) {
+            let counter = 0;
+
             answerList.forEach(async answerId => {
-                let counter = 0;
                 const answer = await getAnswer(answerId);
 
                 if (answer !== "" && answer.state !== -1) {
                     counter += 1;
                     setAnswerCount(counter);
                 }
-            })
+            });
         }
     }
 
     useEffect(
         () => {
-            setLoading(true);
             fetchAnswerCount(answerList);
             setLoading(false);
         }, [answerList]
@@ -70,7 +70,7 @@ export const Home = () => {
 
     const [fypToggle, setFypToggle] = useState(true);
 
-    const [answerCount, setAnswerCount] = useState(0);
+    const [notificationData, setNotificationData] = useState([]);
 
     const navigate = useNavigate();
 
@@ -99,8 +99,19 @@ export const Home = () => {
             setLoginStatus(true);
             handleUserPostData(user.posts);
             handleFollowedPostData(user.following);
+            fetchUserNotifications(user.userId);
         } else {
             console.log("Error fetching user login request.")
+        }
+    }
+
+    const fetchUserNotifications = async (userId) => {
+        const notificationList = await getNotificationsOf(userId);
+
+        if (notificationList.length > 0) {
+            const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const slicedSortedNotif = sortedNotif.slice(0, 5);
+            setNotificationData(slicedSortedNotif);
         }
     }
 
@@ -125,7 +136,8 @@ export const Home = () => {
         const followedPostData = await getFollowedPost(followedList);
 
         if (followedPostData.length > 0) {
-            setFollowingPostData(followedPostData);
+            const filteredFollowedPostData = followedPostData.filter(post => post.state !== -1);
+            setFollowingPostData(filteredFollowedPostData);
         }
     }
 
@@ -387,7 +399,7 @@ export const Home = () => {
                                                 <div className="flex flex-col justify-between items-end">
                                                     <span className="text-[12px]">{item.viewCount} views</span>
                                                     {item.answered !== 0 ?
-                                                        <span className="text-[12px] text-green-500 font-semibold">{item.answers.length} answers</span>
+                                                        <span className="text-[12px] text-green-500 font-semibold"><AnswerItem answerList={item.answers}/></span>
                                                         :
                                                         <span className="text-[12px]"><AnswerItem answerList={item.answers}/></span>
                                                     }
@@ -404,15 +416,29 @@ export const Home = () => {
                             {followingPostData.map(
                                 (item, index) => {
                                     return (
-                                        <li key={index} className="flex gap-[10px] w-full pl-[20px] pr-[20px] pt-[10px] pb-[10px] border-b border-border-line hover:bg-dark-white hover:cursor-pointer"
+                                        <li key={index} className="flex justify-between items-center w-full h-fit pl-[20px] pr-[20px] pt-[10px] pb-[10px] border-b border-border-line hover:bg-dark-white hover:cursor-pointer"
                                             onClick={()=>viewPost(item.postId)}>
-                                            <span className="w-[51px]"><img src={profile} alt="profile" width="100%" height="auto" className="rounded-[50%]"/></span>
-                                            <div className="flex flex-col">
-                                                <div className="flex gap-[5px]">
-                                                    <span className="text-main-maroon font-semibold">{item.postAuthor}</span>
-                                                    <span className="text-dark-gold font-light">{'@' + item.postUsername}</span>
+                                            <div className="flex gap-[10px] w-fit h-full">
+                                                <span className="w-[51px]"><img src={profile} alt="profile" width="100%" height="auto" className="rounded-[50%]"/></span>
+                                                <div className="flex flex-col">
+                                                    <div className="flex gap-[5px]">
+                                                        <span className="text-main-maroon font-semibold">{item.postAuthor}</span>
+                                                        <span className="text-dark-gold font-light">{'@' + item.postUsername}</span>
+                                                    </div>
+                                                    <span className="font-semibold text-[16px]">{item.title}</span>
                                                 </div>
-                                                <span className="font-semibold text-[16px]">{item.title}</span>
+                                            </div>
+
+                                            <div className="flex">
+                                                <div className="flex flex-col justify-between items-end">
+                                                    <span className="text-[12px]">{item.viewCount} views</span>
+                                                    {item.answered !== 0 ?
+                                                        <span className="text-[12px] text-green-500 font-semibold"><AnswerItem answerList={item.answers}/></span>
+                                                        :
+                                                        <span className="text-[12px]"><AnswerItem answerList={item.answers}/></span>
+                                                    }
+                                                    <span className="text-[12px]">{item.upVoters.length - item.downVoters.length} votes</span>
+                                                </div>
                                             </div>
                                         </li>
                                     )
@@ -423,7 +449,7 @@ export const Home = () => {
                     </ul>
                 </div>
 
-                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser}/>
+                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser} notificationData={notificationData}/>
             </div>
         </>
     )

@@ -4,22 +4,20 @@ import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class NotificationDTO {
     
     private long notificationId;
-    private String notificationType;
     private String content;
+    private String notificationType;
+    private long postId;
     private long fromUser;
-    private long toUser;
-    private int state;
+    private String toUser;
     private Date date;
-
-    public NotificationDTO() {
-        this.state = 0;
-        this.date = new Date();
-    }
+    private int state;
 
 }

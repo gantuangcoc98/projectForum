@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import logo from '../images/logo.png';
 import { useEffect, useState } from "react";
-import { fetchUser, followUser, getPostByIds, getUserByIds, unfollowUser } from "./Function";
+import { createNotif, fetchUser, followUser, getPostByIds, getUserByIds, unfollowUser } from "./Function";
+import { Settings } from "./Settings";
 
 
 export const ProfileContent = ({profileData, answerList}) => {
@@ -142,6 +143,7 @@ export const ProfileContent = ({profileData, answerList}) => {
         break;
       case 1:
         console.log("Successfully followed user.");
+        notifyFollowedUser();
         break;
       case -1:
         console.log("User is already followed.");
@@ -179,6 +181,22 @@ export const ProfileContent = ({profileData, answerList}) => {
     window.location.reload();
   }
 
+  const notifyFollowedUser = async () => {
+    const notifData = {
+      "notificationType": "follow",
+      "toUser": profileData.username,
+      "fromUser": loggedUser.userId
+    }
+
+    const notification = await createNotif(notifData);
+
+    if (notification !== "" && notification.state !== -1) {
+      console.log("Successfully notified followed user.");
+    } else {
+      console.log("Failed to notify followed user.");
+    }
+  }
+
   useEffect(
     () => {
       const username = JSON.parse(window.localStorage.getItem('LOGGED_USER'));
@@ -194,7 +212,7 @@ export const ProfileContent = ({profileData, answerList}) => {
   )
 
   return (
-      <div className="flex w-full h-full justify-center">
+    <div className="flex w-full h-full justify-center">
       <div className="flex flex-col h-full w-[70%]">
         <div className="flex justify-between w-full mt-[20px]">
           <div className="flex items-center">
@@ -252,7 +270,7 @@ export const ProfileContent = ({profileData, answerList}) => {
           }
         </div>
 
-        <div className="flex w-full h-fit mt-[20px]">
+        <div className="flex w-full h-fit mt-[20px] mb-[20px]">
           {displaySection === 'profile' &&
             <div className="flex h-fit w-full justify-between">
               <div className="flex flex-col gap-[10px] h-fit w-[30%]">
@@ -439,6 +457,12 @@ export const ProfileContent = ({profileData, answerList}) => {
                 }
               </div>
             </div>
+          }
+
+          {loggedUser.username === profileData.username &&
+            <>
+              {displaySection === "settings" && <Settings profileData={loggedUser}/>}
+            </>
           }
         </div>
       </div>

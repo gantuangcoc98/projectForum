@@ -117,7 +117,7 @@ export const NewPost = () => {
 
     return (
         <>
-            <Header />
+            <Header pageState={'post'}/>
 
             <div className="flex justify-center w-full h-fit">
                 <div className="flex flex-col gap-[20px] h-fit w-[40%] py-[30px]">

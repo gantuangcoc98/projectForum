@@ -4,6 +4,8 @@ import avatar from "../images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as HiIcons from "react-icons/hi2";
+import { fetchUser, getNotificationsOf } from "./Function";
+import { Notifications } from "./Notifications";
 
 export const Header = ({pageState}) => {
 
@@ -14,6 +16,8 @@ export const Header = ({pageState}) => {
   const [loginStatus, setLoginStatus] = useState(false);
 
   const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
+
+  const [notificationData, setNotificationData] = useState([]);
 
   const profileOptionsRef = useRef(null);
 
@@ -31,6 +35,24 @@ export const Header = ({pageState}) => {
     navigate("/login");
   }
 
+  const fetchUserData = async (username) => {
+    const user = await fetchUser(username);
+
+    if (user !== "" && user.state !== -1) {
+      fetchUserNotifications(user.userId);
+    }
+  }
+
+  const fetchUserNotifications = async (userId) => {
+    const notificationList = await getNotificationsOf(userId);
+
+    if (notificationList.length > 0) {
+        const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const slicedSortedNotif = sortedNotif.slice(0, 5);
+        setNotificationData(slicedSortedNotif);
+    }
+  }
+
   useEffect(
     () => {
       const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
@@ -38,6 +60,7 @@ export const Header = ({pageState}) => {
       if (username !== null) {
         setUsername(username);
         setLoginStatus(true);
+        fetchUserData(username);
 
         const handleOutsideClick = (event) => {
           if (profileOptionsRef.current && !profileOptionsRef.current.contains(event.target)) {
@@ -92,31 +115,36 @@ export const Header = ({pageState}) => {
           </div>
         )}
 
-        {pageState === 'profile' &&
+        {(pageState === 'profile' || pageState === 'post') &&
           <>
-            <div className="flex w-fit h-fit">
-              <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"
-                onClick={ () => {setProfileOptionsToggle(!profileOptionsToggle)}}>
-                <img src={avatar} alt={username + 's avatar'} width="50px" height="auto" className="rounded-full" />
-              </span>
+            <div className="flex w-fit h-fit items-center gap-[20px]">
 
-              {profileOptionsToggle &&
-                <div className="flex flex-col w-fit h-fit absolute top-full right-0 rounded-[12px] bg-lighter-white border border-border-line" ref={profileOptionsRef}>
-                  <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
-                    onClick={() => {
-                      navigate('/home');
-                      window.location.reload();
-                    }}>
-                    <span><HiIcons.HiHome /></span>
-                    Home
-                  </span>
-                  <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
-                    onClick={() => {logout()}}>
-                    <span><FaIcons.FaDoorOpen /></span>
-                    Logout
-                  </span>
-                </div>
-              }
+              <Notifications notificationData={notificationData}/>
+
+              <div className="flex w-fit h-fit relative">
+                <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"
+                  onClick={ () => setProfileOptionsToggle(!profileOptionsToggle)}>
+                  <img src={avatar} alt={username + 's avatar'} width="50px" height="auto" className="rounded-full" />
+                </span>
+
+                {profileOptionsToggle &&
+                  <div className="flex flex-col w-fit h-fit absolute top-full right-0 rounded-[12px] bg-lighter-white border border-border-line" ref={profileOptionsRef}>
+                    <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
+                      onClick={() => {
+                        navigate('/home');
+                        window.location.reload();
+                      }}>
+                      <span><HiIcons.HiHome /></span>
+                      Home
+                    </span>
+                    <span className="flex items-center gap-[10px] text-[16px] font-semibold hover:cursor-pointer rounded-[12px] hover:bg-light-white py-[10px] px-[15px]"
+                      onClick={() => {logout()}}>
+                      <span><FaIcons.FaDoorOpen /></span>
+                      Logout
+                    </span>
+                  </div>
+                }
+              </div>
             </div>
           </>
         }

@@ -125,7 +125,7 @@ export const EditPost = () => {
 
     return (
         <>
-            <Header />
+            <Header pageState={'post'}/>
 
             <div className="flex justify-center w-full h-fit">
                 <div className="flex flex-col gap-[23px] h-fit w-[40%] py-[30px]">

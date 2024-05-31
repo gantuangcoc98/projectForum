@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -102,6 +103,12 @@ public class User {
 
     @Column(name = "creationDate")
     private Date creationDate;
+
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
+    private List<Notification> notifInit;
+
+    @OneToMany(mappedBy = "toUser")
+    private List<Notification> notifications;
 
     public User() {
         this.creationDate = new Date();

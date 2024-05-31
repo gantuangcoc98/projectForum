@@ -37,6 +37,12 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(path = "user")
+    public UserDTO getUserById(@RequestParam("userId") long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(path = "getUserByIds")
     public List<UserDTO> getUserByUserIds(@RequestParam List<Long> userIds) {
         return userService.getUserByUserIds(userIds);

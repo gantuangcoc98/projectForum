@@ -4,7 +4,7 @@ import * as BiIcons from 'react-icons/bi';
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import * as TbIcons from "react-icons/tb";
-import { deleteAnswer, formatDateTime, updateAnswer, updatePost } from './Function';
+import { createNotif, deleteAnswer, formatDateTime, getAnswer, updateAnswer, updatePost } from './Function';
 import { useNavigate } from 'react-router-dom';
 
 export const Answers = ({data, postOwner, loggedUser, postId}) => {
@@ -93,6 +93,7 @@ export const Answers = ({data, postOwner, loggedUser, postId}) => {
             case 1:
                 console.log("Successfully marked as answer.");
                 markPost(answerId);
+                notifyAnswerAuthor(answerId);
                 break;
             case -1:
                 console.log("Answer already deleted.");
@@ -214,6 +215,27 @@ export const Answers = ({data, postOwner, loggedUser, postId}) => {
 
     const viewProfile = (username) => {
         navigate(`/profile/${username}`);
+    }
+
+    const notifyAnswerAuthor = async (answerId) => {
+        const answer = await getAnswer(answerId);
+
+        if (answer !== "" && answer.state !== -1 && answer.username !== loggedUser.username) {
+            const notifData = {
+                "notificationType": "markedAnswer",
+                "postId": postId,
+                "toUser": answer.username,
+                "fromUser": loggedUser.userId
+            }
+
+            const notification = await createNotif(notifData);
+
+            if (notification !== "" && notification.state !== -1) {
+                console.log("Successfully notified user about the marked answer.");
+            } else {
+                console.log("Failed to notify user about the marked answer.");
+            }
+        }
     }
 
     useEffect(
