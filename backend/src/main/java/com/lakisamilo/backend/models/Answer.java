@@ -20,6 +20,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Table(name = "tblAnswer")
 public class Answer {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "answerId")
