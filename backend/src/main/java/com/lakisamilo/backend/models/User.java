@@ -106,9 +106,6 @@ public class User {
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL)
     private List<Notification> notifInit;
 
-    @OneToMany(mappedBy = "toUser")
-    private List<Notification> notifications;
-
     public User() {
         this.creationDate = new Date();
         this.state = 0;
