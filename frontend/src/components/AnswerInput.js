@@ -45,11 +45,12 @@ export const AnswerInput = ({user, postId}) => {
 
             if (notification !== "" && notification.state !== -1) {
                 console.log("Successfully notified post author.");
-                window.location.reload();
             } else {
                 console.log("Failed to notify post author.");
             }
         }
+
+        window.location.reload();
     }
 
     useEffect(

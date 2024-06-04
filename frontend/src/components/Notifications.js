@@ -7,6 +7,8 @@ export const Notifications = ({notificationData}) => {
 
     const [notificationsToggle, setNotificationsToggle] = useState(false);
 
+    const [unreadNotif, setUnreadNotif] = useState(true);
+
     const notificationsRef = useRef(null);
 
     const navigate = useNavigate();
@@ -23,8 +25,18 @@ export const Notifications = ({notificationData}) => {
         }
     }
 
+    const checkNotifData = async () => {
+        notificationData.forEach(notification => {
+            if (notification.state === 0) {
+                setUnreadNotif(true);
+            }
+        });
+    }
+
     useEffect(
         () => {
+
+
 
             const handleOutsideClick = (event) => {
                 if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
@@ -47,7 +59,12 @@ export const Notifications = ({notificationData}) => {
                 {notificationsToggle ? 
                 <IoMdIcons.IoMdNotifications />
                 :
-                <IoMdIcons.IoMdNotificationsOutline />
+                <>
+                    {unreadNotif && 
+                        <div className="flex bg-red-500 rounded-full w-2"></div>
+                    }
+                    <IoMdIcons.IoMdNotificationsOutline />
+                </>
                 }
             </span>
 

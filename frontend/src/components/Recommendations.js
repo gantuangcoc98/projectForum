@@ -17,6 +17,19 @@ export const Recommendations = ({latestData, mostViewData, loggedUser, notificat
         }
     }
 
+    const displayShorterTitle = (string) => {
+        let words = string.split(' ');
+
+        if (words.length > 5) {
+            const trimmedWords = words.slice(0, 5);
+            const result = trimmedWords.join(' ');
+
+            return result + '...';
+        }
+
+        return string;
+    }
+
     return (
         <div className="flex flex-col w-[30%] h-full">
             <div className="flex w-full h-[61px] items-center justify-end pr-[25px]">
@@ -34,7 +47,7 @@ export const Recommendations = ({latestData, mostViewData, loggedUser, notificat
                                         <div className="flex justify-between w-full h-fit">
                                             <span className="text-[16px] w-full hover:underline hover:cursor-pointer"
                                                 onClick={()=>viewPost(item.postId)}>
-                                                {item.title}
+                                                {displayShorterTitle(item.title)}
                                             </span>
                                             <span className="text[14px] hover:cursor-pointer hover:text-light-gold"
                                                 onClick={() => viewProfile(item.postUsername)}>
@@ -58,7 +71,7 @@ export const Recommendations = ({latestData, mostViewData, loggedUser, notificat
                                         <div className="flex justify-between w-full h-fit">
                                             <span className="text-[16px] w-full hover:underline hover:cursor-pointer"
                                                 onClick={()=>viewPost(item.postId)}>
-                                                {item.title}
+                                                {displayShorterTitle(item.title)}
                                             </span>
                                             <span className="text[14px] hover:cursor-pointer hover:text-light-gold"
                                                 onClick={() => viewProfile(item.postUsername)}>
