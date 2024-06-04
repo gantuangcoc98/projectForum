@@ -118,6 +118,7 @@ export const ProfileContent = ({profileData, answerList}) => {
 
   const viewProfile = (username) => {
     navigate(`/profile/${username}`);
+    window.location.reload();
   }
 
   const handleFetchUser = async (username) => {
