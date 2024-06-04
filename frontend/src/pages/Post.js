@@ -9,10 +9,13 @@ import { CommentInput } from "../components/CommentInput";
 import { AnswerInput } from "../components/AnswerInput";
 import { Answers } from "../components/Answers";
 import { Comments } from "../components/Comments";
-import { createNotif, deletePost, fetchUser, formatDateTime, getAllPosts, getAnswer, getComment, getLocalUser, getNotificationsOf, getPost, incrementViews, updatePost, votePost } from "../components/Function";
+import { createNotif, deletePost, fetchUser, formatDateTime, getAllPosts, getAnswer, getComment, getLocalUser, getPost, incrementViews, updatePost, votePost } from "../components/Function";
 import { Recommendations } from "../components/Recommendations";
 
 export const Post = () => {
+
+    const [loading, setLoading] = useState(true);
+
     const navigate = useNavigate();
 
     const { postId } = useParams();
@@ -43,7 +46,6 @@ export const Post = () => {
     const [commentList, setCommentList] = useState([]);
 
     const [loggedUser, setLoggedUser] = useState({});
-    const [loginStatus, setLoginStatus] = useState(false);
 
     const [answerToggle, setAnswerToggle] = useState(false);
     const [commentToggle, setCommentToggle] = useState(false);
@@ -56,8 +58,6 @@ export const Post = () => {
     const [commentsBackground, setCommentsBackground] = useState("bg-transparent");
 
     const [showAnswers, setShowAnswers] = useState(true);
-
-    const [notificationData, setNotificationData] = useState([]);
 
     const commentRef = useRef(null);
 
@@ -174,6 +174,8 @@ export const Post = () => {
         });
         const slicedMostViewsData = mostViewsData.slice(0, 5);
         setSortedByMostViews(slicedMostViewsData);
+
+        setLoading(false);
     }
 
     const handleFetchUser = async (username) => {
@@ -181,22 +183,10 @@ export const Post = () => {
 
         if (user !== null) {
             setLoggedUser(user);
-            setLoginStatus(true);
             handleUserPostData(user.posts);
             handleUserVoteState(user);
-            fetchUserNotifications(user.userId);
         } else {
             console.log("Failed to fetch user.");
-        }
-    }
-
-    const fetchUserNotifications = async (userId) => {
-        const notificationList = await getNotificationsOf(userId);
-
-        if (notificationList.length > 0) {
-            const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const slicedSortedNotif = sortedNotif.slice(0, 5);
-            setNotificationData(slicedSortedNotif);
         }
     }
 
@@ -426,7 +416,7 @@ export const Post = () => {
 
     useEffect(
         () => {
-            if (!loginStatus) {
+            if (loading) {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
@@ -443,7 +433,7 @@ export const Post = () => {
             } else {
                 handleViewCount(postId);
             }
-        }, [loginStatus]
+        }, [loading]
     )
 
     useEffect(
@@ -463,6 +453,14 @@ export const Post = () => {
         }, []
     )
 
+    if (loading) {
+        return (
+            <div className="flex w-full h-screen justify-center items-center">
+                <span className="font-semibold">Loading...</span>
+            </div>
+        )
+    }
+
     return (
         <>
             <SideBar userData={loggedUser} postData={userPostData} />
@@ -479,7 +477,7 @@ export const Post = () => {
                             <FaIcons.FaArrowLeft />
                         </span>
                         <span className="text-[20px] font-semibold">Post</span>
-                </div>
+                    </div>
 
                     {!postDeleted ? 
                         <div className="flex flex-col w-full h-full border-r border-l border-b border-border-line">
@@ -661,7 +659,7 @@ export const Post = () => {
                     }
                 </div>
  
-                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser} notificationData={notificationData}/>
+                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser}/>
             </div>
         </>
     )

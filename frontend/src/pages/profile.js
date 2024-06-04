@@ -7,6 +7,8 @@ import * as MdIcons from "react-icons/md";
 
 export const Profile = () => {
 
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const { username } = useParams();
@@ -15,10 +17,7 @@ export const Profile = () => {
 
   const [profileData, setProfileData] = useState({});
 
-  const [loginStatus, setLoginStatus] = useState(false);
   const [answerList, setAnswerList] = useState([]);
-
-  const [loading, setLoading] = useState(true);
 
   const [profileNotFound, setProfileNotFound] = useState(false);
 
@@ -27,7 +26,6 @@ export const Profile = () => {
 
     if (user !== "") {
       setLoggedUser(user);
-      setLoginStatus(true);
     } else {
       console.log("User not found.");
     }
@@ -67,31 +65,39 @@ export const Profile = () => {
     if (user !== "" && user.state !== -1) {
       setProfileData(user);
       handleFetchAnswerData(user.answers);
-      setLoading(false);
     } else {
       setProfileNotFound(true);
-      setLoading(false);
     }
+
+    setLoading(false);
   }
 
   useEffect(
     () => {
-      const _username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
-      
-      if (_username !== null) {
-        handleFetchUser(_username);
-        handleFetchProfile(username);
-      } else {
-        navigate('/login');
+      if (loading) {
+        const _username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
+        
+        if (_username !== null) {
+          handleFetchUser(_username);
+          handleFetchProfile(username);
+        } else {
+          navigate('/login');
+        }
       }
-    }, [username]
+    }, [loading]
   )
 
-  if (loading) return <div>Loading...</div>
+  if (loading) {
+    return (
+      <div className="flex w-full h-screen justify-center items-center">
+        <span className="font-semibold">Loading...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col w-full">
-      <Header pageState={'profile'}/>
+      <Header pageState={'profile'} userId={loggedUser.userId}/>
       
       {profileNotFound ? 
         <div className="flex justify-center mt-[20px]">

@@ -5,9 +5,9 @@ import { createPost, fetchUser } from "../components/Function";
 
 export const NewPost = () => {
 
-    const [loggedUser, setLoggedUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    const [loginStatus, setLoginStatus] = useState(false);
+    const [loggedUser, setLoggedUser] = useState({});
 
     const [title, setTitle] = useState('');
     const [titleCharCount, setTitleCharCount] = useState(0);
@@ -40,10 +40,11 @@ export const NewPost = () => {
 
         if (user != null) {
             setLoggedUser(user);
-            setLoginStatus(true);
         } else {
             console.log("Failed to fetch user.");
         }
+
+        setLoading(false);
     }
 
     const handlePostOnClick = async () => {
@@ -82,24 +83,7 @@ export const NewPost = () => {
 
     useEffect(
         () => {
-            const textarea = descriptionRef.current;
-            textarea.focus();
-            textarea.addEventListener('input', autoResize, false);
-
-            function autoResize() {
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
-            }
-
-            return () => {
-                textarea.removeEventListener('input', autoResize, false);
-            };
-        }, []
-    )
-
-    useEffect(
-        () => {
-            if (!loginStatus) {
+            if (loading) {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
@@ -111,13 +95,36 @@ export const NewPost = () => {
                 } catch (error) {
                     console.log("Error:", error);
                 }
+            } else {
+
+                const textarea = descriptionRef.current;
+                textarea.focus();
+                textarea.addEventListener('input', autoResize, false);
+    
+                function autoResize() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                }
+    
+                return () => {
+                    textarea.removeEventListener('input', autoResize, false);
+                };
+
             }
-        }, [loginStatus]
+        }, [loading]
     )
+
+    if (loading) {
+        return (
+            <div className="flex w-full h-screen justify-center items-center">
+                <span className="font-semibold">Loading...</span>
+            </div>
+        )
+    }
 
     return (
         <>
-            <Header pageState={'post'}/>
+            <Header pageState={'post'} userId={loggedUser.userId}/>
 
             <div className="flex justify-center w-full h-fit">
                 <div className="flex flex-col gap-[20px] h-fit w-[40%] py-[30px]">

@@ -4,10 +4,9 @@ import avatar from "../images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as HiIcons from "react-icons/hi2";
-import { fetchUser, getNotificationsOf } from "./Function";
 import { Notifications } from "./Notifications";
 
-export const Header = ({pageState}) => {
+export const Header = ({pageState, userId}) => {
 
   const navigate = useNavigate();
 
@@ -16,8 +15,6 @@ export const Header = ({pageState}) => {
   const [loginStatus, setLoginStatus] = useState(false);
 
   const [profileOptionsToggle, setProfileOptionsToggle] = useState(false);
-
-  const [notificationData, setNotificationData] = useState([]);
 
   const profileOptionsRef = useRef(null);
 
@@ -35,24 +32,6 @@ export const Header = ({pageState}) => {
     navigate("/login");
   }
 
-  const fetchUserData = async (username) => {
-    const user = await fetchUser(username);
-
-    if (user !== "" && user.state !== -1) {
-      fetchUserNotifications(user.userId);
-    }
-  }
-
-  const fetchUserNotifications = async (userId) => {
-    const notificationList = await getNotificationsOf(userId);
-
-    if (notificationList.length > 0) {
-        const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
-        const slicedSortedNotif = sortedNotif.slice(0, 5);
-        setNotificationData(slicedSortedNotif);
-    }
-  }
-
   useEffect(
     () => {
       const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
@@ -60,7 +39,6 @@ export const Header = ({pageState}) => {
       if (username !== null) {
         setUsername(username);
         setLoginStatus(true);
-        fetchUserData(username);
 
         const handleOutsideClick = (event) => {
           if (profileOptionsRef.current && !profileOptionsRef.current.contains(event.target)) {
@@ -119,7 +97,7 @@ export const Header = ({pageState}) => {
           <>
             <div className="flex w-fit h-fit items-center gap-[20px]">
 
-              <Notifications notificationData={notificationData}/>
+              <Notifications userId={userId}/>
 
               <div className="flex w-fit h-fit relative">
                 <span className="flex w-fit h-fit hover:opacity-60 hover:cursor-pointer"

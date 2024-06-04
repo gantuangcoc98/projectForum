@@ -5,6 +5,10 @@ import { Header } from "../components/Header";
 
 export const EditPost = () => {
 
+    const [loading, setLoading] = useState(true);
+
+    const [loggedUser, setLoggedUser] = useState({});
+
     const navigate = useNavigate();
 
     const { postId } = useParams();
@@ -12,8 +16,6 @@ export const EditPost = () => {
     const [postIdLong, setPostIdLong] = useState(0);
     const [postTitle, setPostTitle] = useState('');
     const [postDescription, setPostDescription] = useState('');
-
-    const [loginStatus, setLoginStatus] = useState(false);
 
     const [titleCharCount, setTitleCharCount] = useState(0);
     const [titleLengthWarning, setTitleLengthWarning] = useState(false);
@@ -27,7 +29,7 @@ export const EditPost = () => {
         const user = await fetchUser(username);
 
         if (user !== "") {
-            setLoginStatus(true);
+            setLoggedUser(user);
         }
     }
 
@@ -41,6 +43,8 @@ export const EditPost = () => {
         } else {
             navigate('/home');
         }
+
+        setLoading(false);
     }
 
     const handleTitleOnChange = (e) => {
@@ -93,24 +97,7 @@ export const EditPost = () => {
 
     useEffect(
         () => {
-            const textarea = descriptionRef.current;
-            textarea.focus();
-            textarea.addEventListener('input', autoResize, false);
-
-            function autoResize() {
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
-            }
-
-            return () => {
-                textarea.removeEventListener('input', autoResize, false);
-            };
-        }, []
-    )
-
-    useEffect(
-        () => {
-            if (!loginStatus) {
+            if (loading) {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
@@ -119,13 +106,34 @@ export const EditPost = () => {
                 } catch (error) {
                     console.log("Error:", error);
                 }
+            } else {
+                const textarea = descriptionRef.current;
+                textarea.focus();
+                textarea.addEventListener('input', autoResize, false);
+    
+                function autoResize() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                }
+    
+                return () => {
+                    textarea.removeEventListener('input', autoResize, false);
+                };
             }
-        }, [loginStatus]
+        }, [loading]
     )
+
+    if (loading) {
+        return (
+            <div className="flex w-full h-screen justify-center items-center">
+                <span className="font-semibold">Loading...</span>
+            </div>
+        )
+    }
 
     return (
         <>
-            <Header pageState={'post'}/>
+            <Header pageState={'post'} userId={loggedUser.userId}/>
 
             <div className="flex justify-center w-full h-fit">
                 <div className="flex flex-col gap-[23px] h-fit w-[40%] py-[30px]">

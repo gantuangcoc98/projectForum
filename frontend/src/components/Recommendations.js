@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Notifications } from "./Notifications";
 
-export const Recommendations = ({latestData, mostViewData, loggedUser, notificationData}) => {
+export const Recommendations = ({latestData, mostViewData, loggedUser}) => {
 
     const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export const Recommendations = ({latestData, mostViewData, loggedUser, notificat
     return (
         <div className="flex flex-col w-[30%] h-full">
             <div className="flex w-full h-[61px] items-center justify-end pr-[25px]">
-                <Notifications notificationData={notificationData}/>
+                <Notifications userId={loggedUser.userId}/>
             </div>
 
             <div className="flex flex-col gap-[60px] w-full items-center">

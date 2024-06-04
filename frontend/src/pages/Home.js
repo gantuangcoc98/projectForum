@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import profile from '../images/logo.png';
 import { useEffect, useRef, useState } from "react";
-import { fetchUser, getAllPosts, getAnswer, getFollowedPost, getNotificationsOf, getPost, sortPostsByDate } from "../components/Function";
+import { fetchUser, getAllPosts, getAnswer, getFollowedPost, getPost, sortPostsByDate } from "../components/Function";
 import { Recommendations } from "../components/Recommendations";
 
 const AnswerItem = ({answerList}) => {
@@ -47,9 +47,9 @@ const AnswerItem = ({answerList}) => {
 
 export const Home = () => {
 
-    const [loggedUser, setLoggedUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    const [loginStatus, setLoginStatus] = useState(false);
+    const [loggedUser, setLoggedUser] = useState({});
 
     const [filterOptionsToggle, setFilterOptionsToggle] = useState(false);
 
@@ -69,8 +69,6 @@ export const Home = () => {
     const [dateCreatedFilter, setDateCreatedFilter] = useState(false);
 
     const [fypToggle, setFypToggle] = useState(true);
-
-    const [notificationData, setNotificationData] = useState([]);
 
     const navigate = useNavigate();
 
@@ -96,22 +94,10 @@ export const Home = () => {
 
         if (user !== null) {
             setLoggedUser(user);
-            setLoginStatus(true);
             handleUserPostData(user.posts);
             handleFollowedPostData(user.following);
-            fetchUserNotifications(user.userId);
         } else {
             console.log("Error fetching user login request.")
-        }
-    }
-
-    const fetchUserNotifications = async (userId) => {
-        const notificationList = await getNotificationsOf(userId);
-
-        if (notificationList.length > 0) {
-            const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
-            const slicedSortedNotif = sortedNotif.slice(0, 5);
-            setNotificationData(slicedSortedNotif);
         }
     }
 
@@ -130,6 +116,8 @@ export const Home = () => {
         });
         const slicedMostViewsData = mostViewsData.slice(0, 5);
         setSortedByMostViews(slicedMostViewsData);
+
+        setLoading(false);
     }
 
     const handleFollowedPostData = async (followedList) => {
@@ -140,7 +128,6 @@ export const Home = () => {
             setFollowingPostData(filteredFollowedPostData);
         }
     }
-
     
     const handleUserPostData = async (postIdList) => {
         if (postIdList.length > 0) {
@@ -267,7 +254,7 @@ export const Home = () => {
 
     useEffect(
         () => {
-            if (!loginStatus) {
+            if (loading) {
                 try {
                     const username = JSON.parse(window.localStorage.getItem("LOGGED_USER"));
 
@@ -281,7 +268,7 @@ export const Home = () => {
                     console.error("Error:", error)
                 }
             }
-        }, [loginStatus]
+        }, [loading]
     )
 
     useEffect(
@@ -300,6 +287,12 @@ export const Home = () => {
 
         }, []
     )
+
+    if (loading) return (
+        <div className="flex justify-center items-center w-full h-screen">
+            <span>Loading...</span>
+        </div>
+    );
 
     return (
         <>
@@ -449,7 +442,7 @@ export const Home = () => {
                     </ul>
                 </div>
 
-                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser} notificationData={notificationData}/>
+                <Recommendations latestData={sortedByCreationDate} mostViewData={sortedByMostViews} loggedUser={loggedUser} />
             </div>
         </>
     )

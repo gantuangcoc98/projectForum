@@ -301,6 +301,19 @@ export const getNotificationsOf = async (userId) => {
         console.error("Error:", error);
     }
 }
+
+export const fetchUserNotifications = async (userId) => {
+    const notificationList = await getNotificationsOf(userId);
+
+    if (notificationList.length > 0) {
+        const sortedNotif = notificationList.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const slicedSortedNotif = sortedNotif.slice(0, 5);
+        
+        return slicedSortedNotif;
+    }
+
+    return null;
+}
 // END OF Notification Model CRUD
 
 export {

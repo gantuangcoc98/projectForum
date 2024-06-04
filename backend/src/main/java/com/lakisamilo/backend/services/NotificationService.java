@@ -123,4 +123,20 @@ public class NotificationService {
 
         return null;
     }
+
+    public int readNotif(long notifId) {
+        Optional<Notification> notifOpt = notifRepo.findById(notifId);
+
+        if (notifOpt.isPresent() && notifOpt.get().getState() == 0) {
+            Notification notif = notifOpt.get();
+
+            notif.setState(1);
+
+            notifRepo.save(notif);
+
+            return 1;
+        }
+
+        return 0;
+    }
 }
