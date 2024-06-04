@@ -50,6 +50,9 @@ public class User {
     @JsonIgnoreProperties("answerAuthor")
     private List<Answer> answers;
 
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
     @OneToMany(mappedBy = "commentAuthor", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
