@@ -3,6 +3,7 @@ import { fetchUser, getAnswer } from "../components/Function";
 import { Header } from "../components/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProfileContent } from "../components/ProfileContent";
+import * as MdIcons from "react-icons/md";
 
 export const Profile = () => {
 
@@ -18,6 +19,8 @@ export const Profile = () => {
   const [answerList, setAnswerList] = useState([]);
 
   const [loading, setLoading] = useState(true);
+
+  const [profileNotFound, setProfileNotFound] = useState(false);
 
   const handleFetchUser = async (username) => {
     const user = await fetchUser(username);
@@ -65,6 +68,9 @@ export const Profile = () => {
       setProfileData(user);
       handleFetchAnswerData(user.answers);
       setLoading(false);
+    } else {
+      setProfileNotFound(true);
+      setLoading(false);
     }
   }
 
@@ -85,10 +91,42 @@ export const Profile = () => {
 
   return (
     <div className="flex flex-col w-full">
-
       <Header pageState={'profile'}/>
+      
+      {profileNotFound ? 
+        <div className="flex justify-center mt-[20px]">
+          <div className="flex w-[70%] h-fit gap-[10px] justify-center items-center">
+            <span className="text-[100px]"><MdIcons.MdOutlinePersonOff /></span>
 
-      <ProfileContent profileData = {profileData} answerList={answerList} />
+            <div className="flex flex-col items-start">
+              <div className="flex w-fit h-fit gap-[10px] items-center">
+                <span className="text-[40px] font-semibold">Profile not found</span>
+              </div>
+
+              <div className="flex flex-col w-fit h-fit gap-[5px]">
+                <span>Try one of these following:</span>
+                <ul className="flex flex-col list-disc ml-[20px]">
+                  <li>
+                    Go to 
+                    <span className="text-main-maroon hover:cursor-pointer hover:text-lighter-maroon"
+                      onClick={() => {navigate('/home')}}> home page.</span>
+                  </li>
+                  <li>
+                    View your
+                    <span className="text-main-maroon hover:cursor-pointer hover:text-lighter-maroon"
+                      onClick={() => {
+                        navigate(`/profile/${loggedUser.username}`);
+                        window.location.reload();
+                        }}> profile.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        :
+        <ProfileContent profileData = {profileData} answerList={answerList} />
+      }
     </div>
   );
 };

@@ -29,24 +29,38 @@ export default function SideBar({ userData, postData }) {
     navigate("/login");
   };
 
-    const viewProfile = () => {
-        navigate(`/profile/${loggedUser.username}`);
+  const viewProfile = () => {
+      navigate(`/profile/${loggedUser.username}`);
+  }
+
+  const viewPost = (postId) => {
+      console.log('Viewing post:', postId);
+      navigate(`/post/${postId}`);
+      window.location.reload();
+  }
+
+  const formatDate = (dateString) => {
+      const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
+
+      const date = new Date(dateString);
+
+      const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+      return `${formattedDate}`;
+  }
+
+  const displayShorterTitle = (string) => {
+    let words = string.split(' ');
+
+    if (words.length > 5) {
+      const trimmedWords = words.slice(0, 5);
+      
+      const result = trimmedWords.join(' ');
+
+      return result + '...';
     }
 
-    const viewPost = (postId) => {
-        console.log('Viewing post:', postId);
-        navigate(`/post/${postId}`);
-        window.location.reload();
-    }
-
-    const formatDate = (dateString) => {
-        const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
-
-        const date = new Date(dateString);
-
-        const formattedDate = date.toLocaleDateString('en-US', dateOptions);
-        return `${formattedDate}`;
-    }
+    return string;
+  }
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -97,7 +111,7 @@ export default function SideBar({ userData, postData }) {
                                     <li key={index}>
                                         <div className="flex w-full h-fit relative">
                                             <span className="text-[16px] w-full hover:underline hover:cursor-pointer z-10 "
-                                                onClick={() => viewPost(item.postId)}>{item.title}</span>
+                                                onClick={() => viewPost(item.postId)}>{displayShorterTitle(item.title)}</span>
                                             <span className="text-[14px] absolute right-0 z-0">{formatDate(item.date)}</span>
                                         </div>
                                     </li>
